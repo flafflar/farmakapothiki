@@ -32,6 +32,32 @@ class DatabaseManager:
         self.cur.execute(select_query)
         return self.cur.fetchall()
 
+    def fetch_filtered(self, search_text, category, manufacturer):
+        '''
+        This method fetches the data from the database that matches the search text, category, and manufacturer.
+        
+        Args:
+            search_text: The text to filter the data by.
+            category: The category to filter the data by.
+            manufacturer: The manufacturer to filter the data by.
+            
+        Returns:
+            list: A list of tuples containing the filtered data.
+        '''
+        select_query = "SELECT * FROM Products WHERE name LIKE ?"
+        params = ['%' + search_text + '%']
+        
+        if category != "All":
+            select_query += " AND category = ?"
+            params.append(category)
+            
+        if manufacturer != "All":
+            select_query += " AND manufacturer = ?"
+            params.append(manufacturer)
+        
+        self.cur.execute(select_query, params)
+        return self.cur.fetchall()
+
     def fetch_categories(self):
         '''
         This method fetches all the categories from the database.
@@ -147,7 +173,8 @@ class Ui_MainWindow(object):
         self.CategoryBox.setObjectName(u"CategoryBox")
         self.CategoryBox.setMinimumSize(QSize(220, 0))
         self.CategoryBox.setFont(font)
-
+        self.CategoryBox.addItem("All")
+        
         self.verticalLayout_3.addWidget(self.CategoryBox)
 
 
@@ -168,6 +195,7 @@ class Ui_MainWindow(object):
         self.CompanyBox.setObjectName(u"CompanyBox")
         self.CompanyBox.setMinimumSize(QSize(220, 0))
         self.CompanyBox.setFont(font)
+        self.CompanyBox.addItem("All")
 
         self.verticalLayout_4.addWidget(self.CompanyBox)
 
@@ -246,8 +274,8 @@ class MainWindow(QMainWindow):
         load_categories: Loads the categories into the combo box.
         load_manufacturers: Loads the manufacturers into the combo box.
         load_table_data: Loads the initial data into the table.
+        filter_table_data: Filters the table data based on the search text, category, and manufacturer.
         closeEvent: Closes the database connection.
-        
     '''
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -264,6 +292,11 @@ class MainWindow(QMainWindow):
         # Load initial data into table
         self.load_table_data()
 
+        # Connect search box and combo box signals to filter method
+        self.ui.SearchBox.textChanged.connect(self.filter_table_data)
+        self.ui.CategoryBox.currentIndexChanged.connect(self.filter_table_data)
+        self.ui.CompanyBox.currentIndexChanged.connect(self.filter_table_data)
+
     def load_categories(self):
         categories = self.db_manager.fetch_categories()
         self.ui.CategoryBox.addItems(categories)
@@ -275,6 +308,13 @@ class MainWindow(QMainWindow):
     def load_table_data(self):
         data = self.db_manager.fetch_all()
         self.ui.update_table(data)
+
+    def filter_table_data(self):
+        search_text = self.ui.SearchBox.text()
+        category = self.ui.CategoryBox.currentText()
+        manufacturer = self.ui.CompanyBox.currentText()
+        filtered_data = self.db_manager.fetch_filtered(search_text, category, manufacturer)
+        self.ui.update_table(filtered_data)
 
     def closeEvent(self, event):
         self.db_manager.close()
