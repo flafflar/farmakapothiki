@@ -266,8 +266,9 @@ class Ui_MainWindow(object):
             None
         '''
         self.tableWidget.setRowCount(len(data))
+        data_coloumns = 6
         for row_num, row_data in enumerate(data):
-            for col_num, col_data in enumerate(row_data):
+            for col_num, col_data in enumerate(row_data[:data_coloumns]):
                 self.tableWidget.setItem(row_num, col_num, QTableWidgetItem(str(col_data)))
             edit_button = QPushButton("")
             icon = QIcon()
@@ -276,18 +277,18 @@ class Ui_MainWindow(object):
             edit_button.setIconSize(QSize(16, 16))
             product_code = self.tableWidget.item(row_num, 0).text()
             edit_button.clicked.connect(self.edit_item_lambda(product_code))    
-            self.tableWidget.setCellWidget(row_num, len(row_data), edit_button)
+            self.tableWidget.setCellWidget(row_num, len(row_data[:data_coloumns]), edit_button)
             info_button = QPushButton("")
             icon1 = QIcon()
             icon1.addFile(u"assets/info.svg", QSize(), QIcon.Normal, QIcon.Off)
             info_button.setIcon(icon1)
             info_button.setIconSize(QSize(16, 16))
             info_button.clicked.connect(self.info_item_lambda(product_code))
-            self.tableWidget.setCellWidget(row_num, len(row_data) + 1, info_button)
+            self.tableWidget.setCellWidget(row_num, len(row_data[:data_coloumns]) + 1, info_button)
             # Make the last two columns smaller
         self.tableWidget.resizeColumnsToContents()
-        self.tableWidget.setColumnWidth(len(row_data), 30)
-        self.tableWidget.setColumnWidth(len(row_data) + 1, 30)
+        self.tableWidget.setColumnWidth(len(row_data[:data_coloumns]), 30)
+        self.tableWidget.setColumnWidth(len(row_data[:data_coloumns]) + 1, 30)
         self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
 
     
