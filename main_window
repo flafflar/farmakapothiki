@@ -1,0 +1,398 @@
+# -*- coding: utf-8 -*-
+
+################################################################################
+## Form generated from reading UI file 'untitled2.ui'
+##
+## Created by: Qt User Interface Compiler version 6.7.0
+##
+## WARNING! All changes made in this file will be lost when recompiling UI file!
+################################################################################
+
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
+    QMainWindow, QMenuBar, QPushButton, QSizePolicy,
+    QSpacerItem, QStatusBar, QVBoxLayout, QWidget)
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        if not MainWindow.objectName():
+            MainWindow.setObjectName(u"MainWindow")
+        MainWindow.resize(666, 423)
+        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget.setObjectName(u"centralwidget")
+        self.horizontalLayoutWidget = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget.setObjectName(u"horizontalLayoutWidget")
+        self.horizontalLayoutWidget.setGeometry(QRect(0, 30, 661, 351))
+        self.horizontalLayout = QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_2)
+
+        self.VL_Left = QVBoxLayout()
+        self.VL_Left.setObjectName(u"VL_Left")
+        self.label_Apothiki = QLabel(self.horizontalLayoutWidget)
+        self.label_Apothiki.setObjectName(u"label_Apothiki")
+        self.label_Apothiki.setScaledContents(False)
+
+        self.VL_Left.addWidget(self.label_Apothiki)
+
+        self.line = QFrame(self.horizontalLayoutWidget)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.HLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.VL_Left.addWidget(self.line)
+
+        self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.Button_Stock = QPushButton(self.horizontalLayoutWidget)
+        self.Button_Stock.setObjectName(u"Button_Stock")
+
+        self.verticalLayout.addWidget(self.Button_Stock)
+
+        self.Button_AddNewReceipt = QPushButton(self.horizontalLayoutWidget)
+        self.Button_AddNewReceipt.setObjectName(u"Button_AddNewReceipt")
+
+        self.verticalLayout.addWidget(self.Button_AddNewReceipt)
+
+
+        self.VL_Left.addLayout(self.verticalLayout)
+
+        self.label_Proionta = QLabel(self.horizontalLayoutWidget)
+        self.label_Proionta.setObjectName(u"label_Proionta")
+
+        self.VL_Left.addWidget(self.label_Proionta)
+
+        self.line_2 = QFrame(self.horizontalLayoutWidget)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.HLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.VL_Left.addWidget(self.line_2)
+
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.Button_ShowItems = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ShowItems.setObjectName(u"Button_ShowItems")
+
+        self.verticalLayout_2.addWidget(self.Button_ShowItems)
+
+        self.Button_AddNewItem = QPushButton(self.horizontalLayoutWidget)
+        self.Button_AddNewItem.setObjectName(u"Button_AddNewItem")
+
+        self.verticalLayout_2.addWidget(self.Button_AddNewItem)
+
+        self.Button_EditCategory = QPushButton(self.horizontalLayoutWidget)
+        self.Button_EditCategory.setObjectName(u"Button_EditCategory")
+
+        self.verticalLayout_2.addWidget(self.Button_EditCategory)
+
+        self.Button_EditCompany = QPushButton(self.horizontalLayoutWidget)
+        self.Button_EditCompany.setObjectName(u"Button_EditCompany")
+
+        self.verticalLayout_2.addWidget(self.Button_EditCompany)
+
+
+        self.VL_Left.addLayout(self.verticalLayout_2)
+
+        self.label_Diaxeirisi = QLabel(self.horizontalLayoutWidget)
+        self.label_Diaxeirisi.setObjectName(u"label_Diaxeirisi")
+
+        self.VL_Left.addWidget(self.label_Diaxeirisi)
+
+        self.line_3 = QFrame(self.horizontalLayoutWidget)
+        self.line_3.setObjectName(u"line_3")
+        self.line_3.setFrameShape(QFrame.Shape.HLine)
+        self.line_3.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.VL_Left.addWidget(self.line_3)
+
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.Button_UserAdministration = QPushButton(self.horizontalLayoutWidget)
+        self.Button_UserAdministration.setObjectName(u"Button_UserAdministration")
+
+        self.verticalLayout_3.addWidget(self.Button_UserAdministration)
+
+        self.Button_ShowSalary = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ShowSalary.setObjectName(u"Button_ShowSalary")
+
+        self.verticalLayout_3.addWidget(self.Button_ShowSalary)
+
+
+        self.VL_Left.addLayout(self.verticalLayout_3)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
+
+        self.VL_Left.addItem(self.verticalSpacer)
+
+
+        self.horizontalLayout.addLayout(self.VL_Left)
+
+        self.horizontalSpacer = QSpacerItem(100, 100, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.VL_Right = QVBoxLayout()
+        self.VL_Right.setObjectName(u"VL_Right")
+        self.label_Pelates = QLabel(self.horizontalLayoutWidget)
+        self.label_Pelates.setObjectName(u"label_Pelates")
+
+        self.VL_Right.addWidget(self.label_Pelates)
+
+        self.line_5 = QFrame(self.horizontalLayoutWidget)
+        self.line_5.setObjectName(u"line_5")
+        self.line_5.setFrameShape(QFrame.Shape.HLine)
+        self.line_5.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.VL_Right.addWidget(self.line_5)
+
+        self.verticalLayout_8 = QVBoxLayout()
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.Button_ShowClients = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ShowClients.setObjectName(u"Button_ShowClients")
+
+        self.verticalLayout_8.addWidget(self.Button_ShowClients)
+
+
+        self.VL_Right.addLayout(self.verticalLayout_8)
+
+        self.label_Paraggelies = QLabel(self.horizontalLayoutWidget)
+        self.label_Paraggelies.setObjectName(u"label_Paraggelies")
+
+        self.VL_Right.addWidget(self.label_Paraggelies)
+
+        self.line_6 = QFrame(self.horizontalLayoutWidget)
+        self.line_6.setObjectName(u"line_6")
+        self.line_6.setFrameShape(QFrame.Shape.HLine)
+        self.line_6.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.VL_Right.addWidget(self.line_6)
+
+        self.verticalLayout_4 = QVBoxLayout()
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.Button_AddOrder = QPushButton(self.horizontalLayoutWidget)
+        self.Button_AddOrder.setObjectName(u"Button_AddOrder")
+
+        self.verticalLayout_4.addWidget(self.Button_AddOrder)
+
+        self.Button_ViewPendingOrders = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ViewPendingOrders.setObjectName(u"Button_ViewPendingOrders")
+
+        self.verticalLayout_4.addWidget(self.Button_ViewPendingOrders)
+
+        self.Button_ViewReadyOrders = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ViewReadyOrders.setObjectName(u"Button_ViewReadyOrders")
+
+        self.verticalLayout_4.addWidget(self.Button_ViewReadyOrders)
+
+        self.Button_ViewAllOrders = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ViewAllOrders.setObjectName(u"Button_ViewAllOrders")
+
+        self.verticalLayout_4.addWidget(self.Button_ViewAllOrders)
+
+
+        self.VL_Right.addLayout(self.verticalLayout_4)
+
+        self.verticalLayout_5 = QVBoxLayout()
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.label_TImologia = QLabel(self.horizontalLayoutWidget)
+        self.label_TImologia.setObjectName(u"label_TImologia")
+
+        self.verticalLayout_5.addWidget(self.label_TImologia)
+
+        self.line_4 = QFrame(self.horizontalLayoutWidget)
+        self.line_4.setObjectName(u"line_4")
+        self.line_4.setFrameShape(QFrame.Shape.HLine)
+        self.line_4.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.verticalLayout_5.addWidget(self.line_4)
+
+        self.Button_SearchBill = QPushButton(self.horizontalLayoutWidget)
+        self.Button_SearchBill.setObjectName(u"Button_SearchBill")
+
+        self.verticalLayout_5.addWidget(self.Button_SearchBill)
+
+        self.Button_ShowBills = QPushButton(self.horizontalLayoutWidget)
+        self.Button_ShowBills.setObjectName(u"Button_ShowBills")
+
+        self.verticalLayout_5.addWidget(self.Button_ShowBills)
+
+
+        self.VL_Right.addLayout(self.verticalLayout_5)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Maximum)
+
+        self.VL_Right.addItem(self.verticalSpacer_2)
+
+
+        self.horizontalLayout.addLayout(self.VL_Right)
+
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_3)
+
+        self.horizontalLayoutWidget_2 = QWidget(self.centralwidget)
+        self.horizontalLayoutWidget_2.setObjectName(u"horizontalLayoutWidget_2")
+        self.horizontalLayoutWidget_2.setGeometry(QRect(420, 0, 239, 31))
+        self.TophorizontalLayout = QHBoxLayout(self.horizontalLayoutWidget_2)
+        self.TophorizontalLayout.setObjectName(u"TophorizontalLayout")
+        self.TophorizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.Button_User = QPushButton(self.horizontalLayoutWidget_2)
+        self.Button_User.setObjectName(u"Button_User")
+
+        self.TophorizontalLayout.addWidget(self.Button_User)
+
+        self.Button_Notifications = QPushButton(self.horizontalLayoutWidget_2)
+        self.Button_Notifications.setObjectName(u"Button_Notifications")
+
+        self.TophorizontalLayout.addWidget(self.Button_Notifications)
+
+        self.Button_Logout = QPushButton(self.horizontalLayoutWidget_2)
+        self.Button_Logout.setObjectName(u"Button_Logout")
+
+        self.TophorizontalLayout.addWidget(self.Button_Logout)
+
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QMenuBar(MainWindow)
+        self.menubar.setObjectName(u"menubar")
+        self.menubar.setGeometry(QRect(0, 0, 666, 21))
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QStatusBar(MainWindow)
+        self.statusbar.setObjectName(u"statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+
+        QMetaObject.connectSlotsByName(MainWindow)
+    # setupUi
+
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        self.label_Apothiki.setText(QCoreApplication.translate("MainWindow", u"\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b7", None))
+        self.Button_Stock.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03c3\u03c4\u03bf\u03ba", None))
+        self.Button_AddNewReceipt.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03c3\u03b8\u03ae\u03ba\u03b7 \u03bd\u03ad\u03b1\u03c2 \u03c0\u03b1\u03c1\u03b1\u03bb\u03b1\u03b2\u03ae\u03c2", None))
+        self.label_Proionta.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1", None))
+        self.Button_ShowItems.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03c9\u03bd", None))
+        self.Button_AddNewItem.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03c3\u03b8\u03ae\u03ba\u03b7 \u03bd\u03ad\u03bf\u03c5 \u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03bf\u03c2", None))
+        self.Button_EditCategory.setText(QCoreApplication.translate("MainWindow", u"\u0395\u03c0\u03b5\u03be\u03b5\u03c1\u03b3\u03b1\u03c3\u03af\u03b1 \u03ba\u03b1\u03c4\u03b7\u03b3\u03c1\u03bf\u03c1\u03b9\u03ce\u03bd", None))
+        self.Button_EditCompany.setText(QCoreApplication.translate("MainWindow", u"\u0395\u03c0\u03b5\u03be\u03b5\u03c1\u03b3\u03b1\u03c3\u03af\u03b1 \u03b5\u03c4\u03b1\u03b9\u03c1\u03b5\u03b9\u03ce\u03bd", None))
+        self.label_Diaxeirisi.setText(QCoreApplication.translate("MainWindow", u"\u0394\u03b9\u03b1\u03c7\u03b5\u03af\u03c1\u03b9\u03c3\u03b7", None))
+        self.Button_UserAdministration.setText(QCoreApplication.translate("MainWindow", u"\u0394\u03b9\u03b1\u03c7\u03b5\u03af\u03c1\u03b9\u03c3\u03b7 \u03c7\u03c1\u03b7\u03c3\u03c4\u03ce\u03bd", None))
+        self.Button_ShowSalary.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03b1\u03bc\u03bf\u03b9\u03b2\u03ce\u03bd \u03c0\u03c9\u03bb\u03b7\u03c4\u03ce\u03bd", None))
+        self.label_Pelates.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03b5\u03bb\u03ac\u03c4\u03b5\u03c2", None))
+        self.Button_ShowClients.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03c0\u03b5\u03bb\u03b1\u03c4\u03bf\u03bb\u03bf\u03b3\u03af\u03bf\u03c5", None))
+        self.label_Paraggelies.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03af\u03b5\u03c2", None))
+        self.Button_AddOrder.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03c3\u03b8\u03ae\u03ba\u03b7 \u03bd\u03ad\u03b1\u03c2 \u03c0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03af\u03b1\u03c2", None))
+        self.Button_ViewPendingOrders.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03b5\u03ba\u03ba\u03c1\u03b5\u03bc\u03ce\u03bd \u03c0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03b9\u03ce\u03bd", None))
+        self.Button_ViewReadyOrders.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03ad\u03c4\u03bf\u03b9\u03bc\u03c9\u03bd \u03c0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03b9\u03ce\u03bd", None))
+        self.Button_ViewAllOrders.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03cc\u03bb\u03c9\u03bd \u03c4\u03c9\u03bd \u03c0\u03b1\u03c1\u03b1\u03b3\u03b3\u03b5\u03bb\u03b9\u03ce\u03bd", None))
+        self.label_TImologia.setText(QCoreApplication.translate("MainWindow", u"\u03a4\u03b9\u03bc\u03bf\u03bb\u03cc\u03b3\u03b9\u03b1", None))
+        self.Button_SearchBill.setText(QCoreApplication.translate("MainWindow", u"\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03c4\u03b9\u03bc\u03bf\u03bb\u03bf\u03b3\u03af\u03bf\u03c5", None))
+        self.Button_ShowBills.setText(QCoreApplication.translate("MainWindow", u"\u03a0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae \u03bc\u03b7 \u03b5\u03be\u03bf\u03c6\u03bb\u03b7\u03bc\u03ad\u03bd\u03c9\u03bd \u03c4\u03b9\u03bc\u03bf\u03bb\u03bf\u03b3\u03af\u03c9\u03bd", None))
+        self.Button_User.setText(QCoreApplication.translate("MainWindow", u"username", None))
+        self.Button_Notifications.setText(QCoreApplication.translate("MainWindow", u"\u0395\u03b9\u03b4\u03bf\u03c0\u03bf\u03b9\u03ae\u03c3\u03b5\u03b9\u03c2", None))
+        self.Button_Logout.setText(QCoreApplication.translate("MainWindow", u"\u0391\u03c0\u03bf\u03c3\u03cd\u03bd\u03b4\u03b5\u03c3\u03b7", None))
+    # retranslateUi
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+#--- Apothiki
+    def on_Button_Stock_clicked(self):
+        # Method for Button_Stock clicked event
+        print("Button_Stock clicked")
+
+    def on_Button_AddNewReceipt_clicked(self):
+        # Method for Button_AddNewReceipt clicked event
+        print("Button_AddNewReceipt clicked")
+
+#--- Proionta
+    def on_Button_ShowItems_clicked(self):
+        # Method for Button_ShowItems clicked event
+        print("Button_ShowItems clicked")
+
+    def on_Button_AddNewItem_clicked(self):
+        # Method for Button_AddNewItem clicked event
+        print("Button_AddNewItem clicked")
+
+    def on_Button_EditCategory_clicked(self):
+        # Method for Button_EditCategory clicked event
+        print("Button_EditCategory clicked")
+
+    def on_Button_EditCompany_clicked(self):
+        # Method for Button_EditCompany clicked event
+        print("Button_EditCompany clicked")
+
+#--- Diaxeirish
+    def on_Button_UserAdministration_clicked(self):
+        # Method for Button_UserAdministration clicked event
+        print("Button_UserAdministration clicked")
+
+    def on_Button_ShowSalary_clicked(self):
+        # Method for Button_ShowSalary clicked event
+        print("Button_ShowSalary clicked")
+#--- Pelates
+    def on_Button_ShowClients_clicked(self):
+        # Method for Button_ShowClients clicked event
+        print("Button_ShowClients clicked")
+
+#--- Paraggelies
+    def on_Button_AddOrder_clicked(self):
+        # Method for Button_AddOrder clicked event
+        print("Button_AddOrder clicked")
+
+    def on_Button_ViewPendingOrders_clicked(self):
+        # Method for Button_ViewPendingOrders clicked event
+        print("Button_ViewPendingOrders clicked")
+
+    def on_Button_ViewReadyOrders_clicked(self):
+        # Method for Button_ViewReadyOrders clicked event
+        print("Button_ViewReadyOrders clicked")
+
+    def on_Button_ViewAllOrders_clicked(self):
+        # Method for Button_ViewAllOrders clicked event
+        print("Button_ViewAllOrders clicked")
+
+#--- TImologia
+    def on_Button_SearchBill_clicked(self):
+        # Method for Button_SearchBill clicked event
+        print("Button_SearchBill clicked")
+
+    def on_Button_ShowBills_clicked(self):
+        # Method for Button_ShowBills clicked event
+        print("Button_ShowBills clicked")
+
+#--- TopBar
+    def on_Button_User_clicked(self):
+        # Method for Button_User clicked event
+        print("Button_User clicked")
+
+    def on_Button_Notifications_clicked(self):
+        # Method for Button_Notifications clicked event
+        print("Button_Notifications clicked")
+
+    def on_Button_Logout_clicked(self):
+        # Method for Button_Logout clicked event
+        print("Button_Logout clicked")
+
+
+def main():
+    import sys
+    app = QApplication(sys.argv)
+    with open("styles/styles_main.qss", "r") as f:
+        app.setStyleSheet(f.read())
+    MainWindow = QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec())
+
+if __name__ == "__main__":
+    main()
