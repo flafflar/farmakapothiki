@@ -5,7 +5,18 @@ import sqlite3
 import sys
 
 class LoginForm(QWidget):
+    """A class for a login form widget.
+
+    Attributes:
+        username_label (QLabel): A label for the username input field.
+        username_input (QLineEdit): A line edit field for entering the username.
+        password_label (QLabel): A label for the password input field.
+        password_input (QLineEdit): A line edit field for entering the password.
+        login_button (QPushButton): A button to trigger the login action.
+        conn (sqlite3.Connection): A connection to the SQLite database.
+    """
     def __init__(self):
+        """Initialize the LoginForm widget."""
         super().__init__()
 
         #--- Window settings
@@ -64,6 +75,7 @@ class LoginForm(QWidget):
     
 #-------Log In Button Logic-------
     def login(self):
+        """Login logic when the login button is clicked."""
         username = self.username_input.text()
         password = self.password_input.text()
         
