@@ -8,7 +8,22 @@ import sys
 
 
 class AdministrationWindow(QWidget):
+    """
+    This is a window for user administration.
+
+    Args:
+    UserInformationDialog: Custom dialog for displaying user information.
+    CreateUserDialog: Custom dialog for creating a new user.
+
+    Returns:
+    None.
+
+    Raises:
+    None.
+    """
+
     def __init__(self):
+        """Initialize the AdministrationWindow."""
         super().__init__()
         #--- Window Settings
         self.setWindowTitle("Λίστα χρηστών")
@@ -53,6 +68,7 @@ class AdministrationWindow(QWidget):
 
 
     def load_data(self):
+        """Load user data into the table."""
         self.table_widget.setRowCount(0) # Clear the table
 
         conn = sqlite3.connect("DataBase/DataBase.db") #DataBase Connection
@@ -83,10 +99,9 @@ class AdministrationWindow(QWidget):
             self.table_widget.setCellWidget(row, 3, icon2_button)
 
     def icon_info_clicked(self, row):
-        # Take Username and Fullname from the table
+        """Show user information dialog when the information icon is clicked."""
         username_item = self.table_widget.item(row, 0)
         fullname_item = self.table_widget.item(row, 1)
-        # Show the information on a dialog
         if username_item:
             username = username_item.text()
             fullname = fullname_item.text()
@@ -99,6 +114,7 @@ class AdministrationWindow(QWidget):
             dialog.exec()
 
     def icon_edit_clicked(self, row):
+        """Open user information dialog for editing when the edit icon is clicked."""
         username_item = self.table_widget.item(row, 0)
 
         if username_item:
@@ -135,6 +151,7 @@ class AdministrationWindow(QWidget):
             dialog.exec()
 
     def open_create_user(self):
+     """Open the dialog for creating a new user."""
      dialog = CreateUserDialog(self) #Open CreateUserDialog
      dialog.user_created.connect(self.load_data) #Reload data
      dialog.exec()

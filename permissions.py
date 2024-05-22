@@ -3,7 +3,9 @@ from PySide6.QtCore import Qt
 import sqlite3
 
 class PermissionsLayout(QVBoxLayout):
+    """Custom layout for managing user permissions."""
     def __init__(self, user_id):
+        """Initialize the PermissionsLayout."""
         super().__init__()
         self.user_id = user_id
         self.addWidget(QLabel("Δικαιώματα:"))
@@ -64,8 +66,8 @@ class PermissionsLayout(QVBoxLayout):
         for index, checkbox in enumerate(self.permission_checkboxes):
             checkbox.stateChanged.connect(lambda state, idx=index: self.update_permission(idx, state))
             
-    # Load permissions from the database for the given user
     def load_permissions(self):
+        """Load permissions from the database for the given user."""
         conn = sqlite3.connect("DataBase/DataBase.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM Permissions WHERE User_ID = ?", (self.user_id,))
@@ -77,14 +79,15 @@ class PermissionsLayout(QVBoxLayout):
                 self.permission_checkboxes[index].setChecked(bool(permission_value))
 
     def enable_permission(self, checkbox, target_index):
+        """Enable or disable a permission checkbox based on another checkbox's state."""
         if checkbox.isChecked():
             self.permission_checkboxes[target_index].setEnabled(True)
         else:
             self.permission_checkboxes[target_index].setEnabled(False)
             self.permission_checkboxes[target_index].setChecked(False)
-
-    #---Update permission value in the database when a checkbox is toggled
+            
     def update_permission(self, index, state):
+        """Update permission value in the database when a checkbox is toggled."""
         column_name = self.permission_columns[index]
         checkbox = self.permission_checkboxes[index]
         if checkbox.isChecked():

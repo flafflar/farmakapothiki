@@ -5,9 +5,21 @@ from permissions import PermissionsLayout
 
 
 class CreateUserDialog(QDialog):
+    """Dialog for creating a new user.
+
+        Attributes:
+        user_created (Signal): Signal emitted when a new user is created.
+
+        Args:
+        parent (QWidget, optional): The parent widget. Defaults to None.
+    """
+
+
     user_created = Signal() # Signal that new year created
 
     def __init__(self, parent=None):
+        """Initialize the CreateUserDialog."""
+
         super().__init__(parent)
 
         self.setWindowTitle("Δημιουργία νέου Χρήστη")
@@ -39,7 +51,7 @@ class CreateUserDialog(QDialog):
         self.setLayout(self.layout)
 
     def create_user(self):
-     
+     """Create a new user."""
      username = self.username_lineedit.text()
      password = self.password_lineedit.text()
      fullname = self.fullname_lineedit.text()
