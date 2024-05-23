@@ -1,6 +1,7 @@
 import datetime
 import sqlite3
 import typing
+
 class Company:
     """
     Represents a company with a unique company code and name.
@@ -74,6 +75,16 @@ class Product:
         self.quantity_limit = quantity_limit
         self.company = company
         self.category = category
+    
+    @property
+    def product_code_int(self) -> int:
+        """
+        Returns the product code as an integer.
+
+        Returns:
+            int: The product code as an integer.
+        """
+        return int(self.product_code[1:])
 
 class DrugBatch:
     """
@@ -84,16 +95,18 @@ class DrugBatch:
         quantity (int): The quantity of drugs in the batch.
         expiration_date (datetime): The date when the drugs in the batch expire.
     """
-    def __init__(self, batch_code: str, quantity: int, expiration_date: datetime):
+    def __init__(self, batch_code: str, product_code: int, quantity: int, expiration_date: datetime):
         """
         Initializes a new instance of the DrugBatch class.
 
         Args:
             batch_code (str): The unique identifier for the drug batch.
+            product_code (int): The unique identifier for the drug.
             quantity (int): The quantity of drugs in the batch.
             expiration_date (datetime): The date when the drugs in the batch expire.
         """
         self.batch_code = batch_code
+        self.product_code = product_code
         self.quantity = quantity
         self.expiration_date = expiration_date
     
@@ -147,22 +160,22 @@ class UserPermissions:
         view_salaries (bool): Permission to view salaries.
         user_administration (bool): Permission for user administration.
     """
-    def __init__(self):
+    def __init__(self, view_stock=False, edit_stock=False, add_products=False, view_notifications=False, create_client_list=False, view_orders=False, add_orders=False, change_order_state=False, view_bills=False, create_bills=False, view_salaries=False, user_administration=False):
         """
         Initializes a new instance of the UserPermissions class with all permissions set to False.
         """
-        self.view_stock = False
-        self.edit_stock = False
-        self.add_products = False
-        self.view_notifications = False
-        self.create_client_list = False
-        self.view_orders = False
-        self.add_orders = False
-        self.change_order_state = False
-        self.view_bills = False
-        self.create_bills = False
-        self.view_salaries = False
-        self.user_administration = False
+        self.view_stock = view_stock
+        self.edit_stock = edit_stock
+        self.add_products = add_products
+        self.view_notifications = view_notifications
+        self.create_client_list = create_client_list
+        self.view_orders = view_orders
+        self.add_orders = add_orders
+        self.change_order_state = change_order_state
+        self.view_bills = view_bills
+        self.create_bills = create_bills
+        self.view_salaries = view_salaries
+        self.user_administration = user_administration
 
 class User:
     """
@@ -297,7 +310,6 @@ class DatabaseManager:
         
         # Commit the changes and close the connection
         self.conn.commit()
-        self.conn.close()
 
     def get_all_users(self) -> list[User]:
         """
@@ -492,7 +504,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             UPDATE Product SET Name = ?, PurchaseCost = ?, SellingPrice = ?, Quantity = ?, QuantityLimit = ?, CompanyCode = ?, CategoryCode = ? WHERE ProductCode = ?
-        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company_code, product.category_code, product.product_code))
+        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code, product.category.category_code, product.product_code_int))
         self.conn.commit()
 
     def insert_product(self, product: Product):
@@ -504,7 +516,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             INSERT INTO Product (Name, PurchaseCost, SellingPrice, Quantity, QuantityLimit, CompanyCode, CategoryCode) VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company_code, product.category_code))
+        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code, product.category.category_code))
         self.conn.commit()
 
     def insert_drug_batch(self, batch: DrugBatch):
