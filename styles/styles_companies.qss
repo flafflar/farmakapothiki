@@ -1,0 +1,29 @@
+QLabel{
+    font-family: Arial;
+    font-size: 18px;
+    color: #22478B;
+    border-radius: 10px;   
+}
+QPushButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+QPushButton#create_company{
+    font-family: Arial; 
+    font-size: 14px;
+    color: white; 
+    background-color: #22478B ;
+    border-radius:10px;
+    margin-right:550px;
+    padding: 10px 20px;
+    max-width: 200px;
+}
+
+QLineEdit {
+    border-radius: 10px;
+    padding: 5px;
+    border: 2px solid #22478B;
+}
