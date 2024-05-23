@@ -1,8 +1,11 @@
 import sys
 import sqlite3
-from PySide2.QtCore import *
-from PySide2.QtGui import *
-from PySide2.QtWidgets import *
+from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt)
+from PySide6.QtGui import (QFont, QIcon)
+from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QHeaderView,
+    QLabel, QLayout, QLineEdit, QMainWindow,
+    QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
+    QVBoxLayout, QWidget, QPushButton, QFormLayout)
 
 class DatabaseManager:
     def __init__(self, db_name):
@@ -118,7 +121,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setEnabled(True)
-        sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.centralwidget.sizePolicy().hasHeightForWidth())
@@ -129,13 +132,13 @@ class Ui_MainWindow(object):
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(5)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setSizeConstraint(QLayout.SetNoConstraint)
+        self.verticalLayout.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setSizeConstraint(QLayout.SetMinimumSize)
+        self.verticalLayout_2.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
 
@@ -153,7 +156,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addLayout(self.verticalLayout_2)
 
-        self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(20, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
@@ -175,7 +178,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout.addLayout(self.verticalLayout_3)
 
-        self.horizontalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Fixed, QSizePolicy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(20, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
@@ -205,7 +208,7 @@ class Ui_MainWindow(object):
             self.tableWidget.setColumnCount(8)
         self.tableWidget.setObjectName(u"tableWidget")
         self.tableWidget.setShowGrid(True)
-        self.tableWidget.setGridStyle(Qt.SolidLine)
+        self.tableWidget.setGridStyle(Qt.PenStyle.SolidLine)
         self.tableWidget.setSortingEnabled(False)
         self.tableWidget.setCornerButtonEnabled(False)
         self.tableWidget.setHorizontalHeaderLabels(["Κωδικός", "Όνομα", "Κόστος αγοράς", "Τιμή πώλησης", "Ποσότητα", "Όριο ποσότητας", "", ""])
@@ -215,8 +218,8 @@ class Ui_MainWindow(object):
         self.tableWidget.verticalHeader().setProperty("showSortIndicator", False)
         self.tableWidget.verticalHeader().setStretchLastSection(False)
         self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.tableWidget.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.tableWidget.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
+        self.tableWidget.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.verticalLayout_5.addWidget(self.tableWidget)
 
         MainWindow.setCentralWidget(self.centralwidget)
