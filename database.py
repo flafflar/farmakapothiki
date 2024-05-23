@@ -73,19 +73,19 @@ class DatabaseManager:
         # Create UserPermissions table
         self.c.execute('''
             CREATE TABLE IF NOT EXISTS UserPermissions (
-                UserId INTEGER,
-                ViewStock INTEGER,
-                EditStock INTEGER,
-                AddProduct INTEGER,
-                ViewNotifications INTEGER,
-                CreateClientList INTEGER,
-                ViewOrders INTEGER,
-                AddOrders INTEGER,
-                ChangeOrderState INTEGER,
-                ViewBills INTEGER,
-                CreateBills INTEGER,
-                ViewSalaries INTEGER,
-                UserAdministration INTEGER,
+                UserId INTEGER NOT NULL,
+                ViewStock INTEGER NOT NULL,
+                EditStock INTEGER NOT NULL,
+                AddProduct INTEGER NOT NULL,
+                ViewNotifications INTEGER NOT NULL,
+                CreateClientList INTEGER NOT NULL,
+                ViewOrders INTEGER NOT NULL,
+                AddOrders INTEGER NOT NULL,
+                ChangeOrderState INTEGER NOT NULL,
+                ViewBills INTEGER NOT NULL,
+                CreateBills INTEGER NOT NULL,
+                ViewSalaries INTEGER NOT NULL,
+                UserAdministration INTEGER NOT NULL,
                 PRIMARY KEY (UserId),
                 FOREIGN KEY (UserId) REFERENCES User(Id)
             )
@@ -125,13 +125,12 @@ class DatabaseManager:
         
         # Create Drug table
         self.c.execute('''
-            CREATE TABLE IF NOT EXISTS Drug (
-                ProductCode INTEGER,
-                Quality INTEGER,
-                PRIMARY KEY (ProductCode, Quality),
-                FOREIGN KEY (ProductCode) REFERENCES Product(ProductCode)
-            )
-        ''')
+                    CREATE TABLE IF NOT EXISTS Drug (
+                        ProductCode INTEGER PRIMARY KEY,
+                        Quality INTEGER,
+                        FOREIGN KEY (ProductCode) REFERENCES Product(ProductCode)
+                    )
+                ''')
         
         # Create DrugBatch table
         self.c.execute('''
