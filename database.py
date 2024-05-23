@@ -142,6 +142,7 @@ class UserPermissions:
         view_orders (bool): Permission to view orders.
         add_orders (bool): Permission to add orders.
         change_order_state (bool): Permission to change the state of orders.
+        view_bills (bool): Permission to view bills.
         create_bills (bool): Permission to create bills.
         view_salaries (bool): Permission to view salaries.
         user_administration (bool): Permission for user administration.
@@ -158,6 +159,7 @@ class UserPermissions:
         self.view_orders = False
         self.add_orders = False
         self.change_order_state = False
+        self.view_bills = False
         self.create_bills = False
         self.view_salaries = False
         self.user_administration = False
@@ -321,9 +323,10 @@ class DatabaseManager:
                     view_orders=bool(perm_row[6]),
                     add_orders=bool(perm_row[7]),
                     change_order_state=bool(perm_row[8]),
-                    create_bills=bool(perm_row[9]),
-                    view_salaries=bool(perm_row[10]),
-                    user_administration=bool(perm_row[11])
+                    view_bills=bool(perm_row[9]),
+                    create_bills=bool(perm_row[10]),
+                    view_salaries=bool(perm_row[11]),
+                    user_administration=bool(perm_row[12])
                 )
                 users.append(User(row[0], row[1], row[2], row[3], permissions))
         return users
@@ -356,9 +359,10 @@ class DatabaseManager:
                     view_orders=bool(perm_row[6]),
                     add_orders=bool(perm_row[7]),
                     change_order_state=bool(perm_row[8]),
-                    create_bills=bool(perm_row[9]),
-                    view_salaries=bool(perm_row[10]),
-                    user_administration=bool(perm_row[11])
+                    view_bills=bool(perm_row[9]),
+                    create_bills=bool(perm_row[10]),
+                    view_salaries=bool(perm_row[11]),
+                    user_administration=bool(perm_row[12])
                 )
                 return User(row[0], row[1], row[2], row[3], permissions)
         return None
