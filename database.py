@@ -215,11 +215,14 @@ class DatabaseManager:
         conn (sqlite3.Connection): The connection to the SQLite3 database.
         c (sqlite3.Cursor): The cursor for executing SQL statements.
     """
-    def __init__(self):
+    def __init__(self, database_path='database.db'):
         """
         Initializes a new instance of the DatabaseManager class, establishing a connection to the SQLite3 database and creating a cursor for executing SQL statements.
+
+        Args:
+            database_path (str): The path to the SQLite3 database file.
         """
-        self.conn = sqlite3.connect('database.db')
+        self.conn = sqlite3.connect(database_path)
         self.c = self.conn.cursor()
         self.create_tables()
         
