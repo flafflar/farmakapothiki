@@ -67,6 +67,8 @@ class Product:
             company (Company): The company that produces the product.
             category (Category): The category to which the product belongs.
         """
+        if type(product_code) == int:
+            product_code = f"P{str(product_code).zfill(6)}"
         self.product_code = product_code
         self.name = name
         self.purchase_cost = purchase_cost
@@ -542,3 +544,9 @@ class DatabaseManager:
             UPDATE DrugBatch SET ProductCode = ?, Quantity = ?, ExpirationDate = ? WHERE BatchCode = ?
         ''', (batch.product_code, batch.quantity, batch.expiration_date, batch.batch_code))
         self.conn.commit()
+
+    def close(self):
+        """
+        Closes the connection to the SQLite3 database.
+        """
+        self.conn.close()
