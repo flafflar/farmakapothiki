@@ -387,13 +387,47 @@
                                             "height": 13,
                                             "text": "+insert_drug_batch(batch: DrugBatch)",
                                             "horizontalAlignment": 0
+                                        },
+                                        {
+                                            "_type": "UMLOperationView",
+                                            "_id": "AAAAAAGPqlX2KTz7Lzg=",
+                                            "_parent": {
+                                                "$ref": "AAAAAAGPkrNdIP57xlY="
+                                            },
+                                            "model": {
+                                                "$ref": "AAAAAAGPqlX2JTz4NTw="
+                                            },
+                                            "font": "Arial;13;0",
+                                            "left": 533,
+                                            "top": 497,
+                                            "width": 267.982421875,
+                                            "height": 13,
+                                            "text": "+get_company_by_code(code: int)",
+                                            "horizontalAlignment": 0
+                                        },
+                                        {
+                                            "_type": "UMLOperationView",
+                                            "_id": "AAAAAAGPqlbK8j/IX80=",
+                                            "_parent": {
+                                                "$ref": "AAAAAAGPkrNdIP57xlY="
+                                            },
+                                            "model": {
+                                                "$ref": "AAAAAAGPqlbK7z/FnYw="
+                                            },
+                                            "font": "Arial;13;0",
+                                            "left": 533,
+                                            "top": 512,
+                                            "width": 267.982421875,
+                                            "height": 13,
+                                            "text": "+get_category_by_code(code: int)",
+                                            "horizontalAlignment": 0
                                         }
                                     ],
                                     "font": "Arial;13;0",
                                     "left": 528,
                                     "top": 267,
                                     "width": 277.982421875,
-                                    "height": 233
+                                    "height": 263
                                 },
                                 {
                                     "_type": "UMLReceptionCompartmentView",
@@ -431,7 +465,7 @@
                             "left": 528,
                             "top": 232,
                             "width": 276.982421875,
-                            "height": 268,
+                            "height": 298,
                             "nameCompartment": {
                                 "$ref": "AAAAAAGPkrNdH/51GhQ="
                             },
@@ -3407,7 +3441,7 @@
                                 "$ref": "AAAAAAGPks2QcJ5BI6Y="
                             },
                             "lineStyle": 1,
-                            "points": "839:370;806:369"
+                            "points": "839:374;806:375"
                         }
                     ]
                 },
@@ -5709,6 +5743,44 @@
                                     }
                                 }
                             ]
+                        },
+                        {
+                            "_type": "UMLOperation",
+                            "_id": "AAAAAAGPqlX2JTz4NTw=",
+                            "_parent": {
+                                "$ref": "AAAAAAGPkrNdH/5y4xo="
+                            },
+                            "name": "get_company_by_code",
+                            "parameters": [
+                                {
+                                    "_type": "UMLParameter",
+                                    "_id": "AAAAAAGPqlZgIz1rs5U=",
+                                    "_parent": {
+                                        "$ref": "AAAAAAGPqlX2JTz4NTw="
+                                    },
+                                    "name": "code",
+                                    "type": "int"
+                                }
+                            ]
+                        },
+                        {
+                            "_type": "UMLOperation",
+                            "_id": "AAAAAAGPqlbK7z/FnYw=",
+                            "_parent": {
+                                "$ref": "AAAAAAGPkrNdH/5y4xo="
+                            },
+                            "name": "get_category_by_code",
+                            "parameters": [
+                                {
+                                    "_type": "UMLParameter",
+                                    "_id": "AAAAAAGPqlbh60EonJc=",
+                                    "_parent": {
+                                        "$ref": "AAAAAAGPqlbK7z/FnYw="
+                                    },
+                                    "name": "code",
+                                    "type": "int"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -5759,6 +5831,7 @@
                                 "$ref": "AAAAAAGPkrXbUv6gDFs="
                             },
                             "name": "id",
+                            "type": "",
                             "isReadOnly": true
                         },
                         {
@@ -5767,7 +5840,8 @@
                             "_parent": {
                                 "$ref": "AAAAAAGPkrXbUv6gDFs="
                             },
-                            "name": "username"
+                            "name": "username",
+                            "type": ""
                         },
                         {
                             "_type": "UMLAttribute",
@@ -5775,7 +5849,8 @@
                             "_parent": {
                                 "$ref": "AAAAAAGPkrXbUv6gDFs="
                             },
-                            "name": "password"
+                            "name": "password",
+                            "type": ""
                         },
                         {
                             "_type": "UMLAttribute",
@@ -5783,7 +5858,8 @@
                             "_parent": {
                                 "$ref": "AAAAAAGPkrXbUv6gDFs="
                             },
-                            "name": "full_name"
+                            "name": "full_name",
+                            "type": ""
                         }
                     ]
                 },
