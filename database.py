@@ -123,10 +123,12 @@ class Drug(Product):
         selling_price (float): The price at which the drug is sold.
         quantity (int): The quantity of the drug in stock.
         quantity_limit (int): The minimum quantity of the drug that should be in stock.
+        company (Company): The company that produces the drug.
+        category (Category): The category to which the drug belongs.
         quality (bool): The quality of the drug. True if the drug is of high quality, False otherwise.
         batches (list): A list of DrugBatch objects representing the batches of the drug.
     """
-    def __init__(self, product_code: str, name: str, purchase_cost: float, selling_price: float, quantity, quantity_limit, quality: bool, batches: list):
+    def __init__(self, product_code: str, name: str, purchase_cost: float, selling_price: float, quantity: int, quantity_limit: int, company: Company, category: Category, quality: bool, batches: list):
         """
         Initializes a new instance of the Drug class.
 
@@ -140,7 +142,7 @@ class Drug(Product):
             quality (bool): The quality of the drug. True if the drug is of high quality, False otherwise.
             batches (list): A list of DrugBatch objects representing the batches of the drug.
         """
-        super().__init__(product_code, name, purchase_cost, selling_price, quantity, quantity_limit)
+        super().__init__(product_code, name, purchase_cost, selling_price, quantity, quantity_limit, company, category)
         self.quality = quality
         self.batches = batches
  
