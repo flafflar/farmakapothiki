@@ -6,95 +6,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QHeaderView
     QLabel, QLayout, QLineEdit, QMainWindow,
     QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
     QVBoxLayout, QWidget, QPushButton, QFormLayout)
-
-class DatabaseManager:
-    def __init__(self, db_name):
-        '''
-        This method initializes the database manager.
-        
-        Args:
-            db_name: The name of the database file.
-            
-        Returns:
-            None
-        '''
-        self.conn = sqlite3.connect(db_name)
-        self.cur = self.conn.cursor()
-
-    def fetch_all(self):
-        '''
-        This method fetches all the data from the database.
-        
-        Args:
-            None
-            
-        Returns:
-            list: A list of tuples containing the data.
-        '''
-        select_query = "SELECT * FROM Products;"
-        self.cur.execute(select_query)
-        return self.cur.fetchall()
-
-    def fetch_filtered(self, search_text):
-        '''
-        This method fetches the data from the database that matches the search text, category, and manufacturer.
-        
-        Args:
-            search_text: The text to filter the data by.
-            
-        Returns:
-            list: A list of tuples containing the filtered data.
-        '''
-        select_query = "SELECT * FROM Products WHERE name LIKE ?"
-        params = ['%' + search_text + '%']
-
-        self.cur.execute(select_query, params)
-        return self.cur.fetchall()
-    
-    def fetch_product(self, product_code):
-        '''
-        This method fetches the product with the given product code.
-
-        Args:
-            product_code: The product code of the product.
-
-        Returns:
-            list: A list of tuples containing the product data.
-        '''
-        select_query = "SELECT * FROM Products WHERE product_code = ?;"
-        self.cur.execute(select_query, (product_code,))
-        return self.cur.fetchall()
-
-    def update_product(self, product_code, name, purchase_cost, selling_price, quantity, quantity_limit):
-        '''
-        This method updates the product with the given product code.
-
-        Args:
-            product_code: The product code of the product.
-            name: The name of the product.
-            purchase_cost: The purchase cost of the product.
-            selling_price: The selling price of the product.
-            quantity: The quantity of the product.
-            quantity_limit: The quantity limit of the product.
-
-        Returns:
-            None
-        '''
-        update_query = "UPDATE Products SET name = ?, purchase_cost = ?, selling_price = ?, quantity = ?, quantity_limit = ? WHERE product_code = ?;"
-        self.cur.execute(update_query, (name, purchase_cost, selling_price, quantity, quantity_limit, product_code))
-        self.conn.commit()
-
-    def close(self):
-        '''
-        This method closes the database connection.
-
-        Args:
-            None
-
-        Returns:
-            None
-        '''
-        self.conn.close()
+import database
 
 class Ui_MainWindow(object):
     '''
@@ -227,6 +139,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
+        self.db_manager = database.DatabaseManager()
 
     def retranslateUi(self, MainWindow):
         '''
@@ -253,86 +166,84 @@ class Ui_MainWindow(object):
         Returns:
             None
         '''
-        self.db_manager = DatabaseManager('products.db')
-        data = self.db_manager.fetch_all()
-        self.update_table(data)
-        self.db_manager.close()
+        self.update_table(self.db_manager.get_all_products())
 
     def update_table(self, data):
         '''
         This method updates the table with the given data.
 
         Args:
-            data: A list of tuples containing the data.
+            data: A list of Product objects.
 
         Returns:
             None
         '''
         self.tableWidget.setRowCount(len(data))
         data_coloumns = 6
-        for row_num, row_data in enumerate(data):
-            for col_num, col_data in enumerate(row_data[:data_coloumns]):
-                self.tableWidget.setItem(row_num, col_num, QTableWidgetItem(str(col_data)))
+        for row_num, product in enumerate(data):
+            self.tableWidget.setItem(row_num, 0, QTableWidgetItem(product.product_code))
+            self.tableWidget.setItem(row_num, 1, QTableWidgetItem(product.name))
+            self.tableWidget.setItem(row_num, 2, QTableWidgetItem(str(product.purchase_cost)))
+            self.tableWidget.setItem(row_num, 3, QTableWidgetItem(str(product.selling_price)))
+            self.tableWidget.setItem(row_num, 4, QTableWidgetItem(str(product.quantity)))
+            self.tableWidget.setItem(row_num, 5, QTableWidgetItem(str(product.quantity_limit)))
             edit_button = QPushButton("")
             icon = QIcon()
             icon.addFile(u"assets/edit.svg", QSize(), QIcon.Normal, QIcon.Off)
             edit_button.setIcon(icon)
             edit_button.setIconSize(QSize(16, 16))
-            product_code = self.tableWidget.item(row_num, 0).text()
-            edit_button.clicked.connect(self.edit_item_lambda(product_code))    
-            self.tableWidget.setCellWidget(row_num, len(row_data[:data_coloumns]), edit_button)
+            edit_button.clicked.connect(self.edit_item_lambda(product))
+            self.tableWidget.setCellWidget(row_num, 6, edit_button)
             info_button = QPushButton("")
             icon1 = QIcon()
             icon1.addFile(u"assets/info.svg", QSize(), QIcon.Normal, QIcon.Off)
             info_button.setIcon(icon1)
             info_button.setIconSize(QSize(16, 16))
-            info_button.clicked.connect(self.info_item_lambda(product_code))
-            self.tableWidget.setCellWidget(row_num, len(row_data[:data_coloumns]) + 1, info_button)
-            # Make the last two columns smaller
-        self.tableWidget.resizeColumnsToContents()
-        self.tableWidget.setColumnWidth(len(row_data[:data_coloumns]), 30)
-        self.tableWidget.setColumnWidth(len(row_data[:data_coloumns]) + 1, 30)
-        self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+            info_button.clicked.connect(self.info_item_lambda(product))
+            self.tableWidget.setCellWidget(row_num, 7, info_button)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
+        self.tableWidget.horizontalHeader().setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+        self.tableWidget.setColumnWidth(6, 30)
+        self.tableWidget.setColumnWidth(7, 30)
 
-    
-    def edit_item_lambda(self, product_code):
+    def edit_item_lambda(self, product):
         '''
-        This method returns a lambda function that opens the edit window for the given product code.
+        This method returns a lambda function that opens the edit window for the given product.
         
         Args:
-            product_code: The product code of the product.
+            product: The product object to edit.
             
         Returns:
             function: A lambda function that opens the edit window.
         '''
         def edit_item():
-            print(product_code)
-            self.edit_window = ProductWindow(product_code, edit=True, callback=self.update_table_db)
+            self.edit_window = ProductWindow(product, edit=True, callback=self.update_table_db)
             self.edit_window.show()
         return edit_item
     
-    def info_item_lambda(self, product_code):
+    def info_item_lambda(self, product):
         '''
-        This method returns a lambda function that opens the info window for the given product code.
+        This method returns a lambda function that opens the info window for the given product.
 
         Args:
-            product_code: The product code of the product.
+            product: The product object to edit.
 
         Returns:
             function: A lambda function that opens the info window.
         '''
         def info_item():
-            print(product_code)
-            self.info_window = ProductWindow(product_code, edit=False)
+            self.info_window = ProductWindow(product, edit=False)
             self.info_window.show()
         return info_item
-
 class ProductWindow(QWidget):
     '''
     This class represents the product window.
 
     Attributes:
-        product_code: The product code of the product.
+        product: The product object.
         edit: A boolean value indicating whether the window is in edit mode.
         callback: A function to call after the window is closed.
         db_manager: The database manager.
@@ -344,13 +255,12 @@ class ProductWindow(QWidget):
         save_changes: Saves the changes to the product.
         _close: Closes the window.
     '''
-    def __init__(self, product_code, edit=False, callback=None, parent=None):
+    def __init__(self, product, edit=False, callback=None, parent=None):
         super().__init__(parent)
         self.callback = callback
-        self.product_code = product_code
+        self.product = product
         self.edit = edit
-        self.db_manager = DatabaseManager('products.db')
-        self.data = self.db_manager.fetch_product(product_code)
+        self.db_manager = database.DatabaseManager()
         self.setWindowTitle("Επεξεργασία Προϊόντος")
         self.layout = QFormLayout()
         self.setLayout(self.layout)
@@ -358,42 +268,42 @@ class ProductWindow(QWidget):
 
     def init_ui(self):
         self.product_code_label = QLabel("Κωδικός Προϊόντος:")
-        self.product_code_label_value = QLabel(self.product_code)
+        self.product_code_label_value = QLabel(self.product.product_code)
         if not self.edit:
             self.product_code_label_value.setDisabled(True)
         self.layout.addRow(self.product_code_label, self.product_code_label_value)
 
         self.name_label = QLabel("Όνομα:")
         self.name_input = QLineEdit()
-        self.name_input.setText(self.data[0][1])
+        self.name_input.setText(self.product.name)
         if not self.edit:
             self.name_input.setDisabled(True)
         self.layout.addRow(self.name_label, self.name_input)
 
         self.purchase_cost_label = QLabel("Κόστος Αγοράς:")
         self.purchase_cost_input = QLineEdit()
-        self.purchase_cost_input.setText(str(self.data[0][2]))
+        self.purchase_cost_input.setText(str(self.product.purchase_cost))
         if not self.edit:
             self.purchase_cost_input.setDisabled(True)
         self.layout.addRow(self.purchase_cost_label, self.purchase_cost_input)
 
         self.selling_price_label = QLabel("Τιμή Πώλησης:")
         self.selling_price_input = QLineEdit()
-        self.selling_price_input.setText(str(self.data[0][3]))
+        self.selling_price_input.setText(str(self.product.selling_price))
         if not self.edit:
             self.selling_price_input.setDisabled(True)
         self.layout.addRow(self.selling_price_label, self.selling_price_input)
 
         self.quantity_label = QLabel("Ποσότητα:")
         self.quantity_input = QLineEdit()
-        self.quantity_input.setText(str(self.data[0][4]))
+        self.quantity_input.setText(str(self.product.quantity))
         if not self.edit:
             self.quantity_input.setDisabled(True)
         self.layout.addRow(self.quantity_label, self.quantity_input)
 
         self.quantity_limit_label = QLabel("Όριο Ποσότητας:")
         self.quantity_limit_input = QLineEdit()
-        self.quantity_limit_input.setText(str(self.data[0][5]))
+        self.quantity_limit_input.setText(str(self.product.quantity_limit))
         if not self.edit:
             self.quantity_limit_input.setDisabled(True)
         self.layout.addRow(self.quantity_limit_label, self.quantity_limit_input)
@@ -415,7 +325,12 @@ class ProductWindow(QWidget):
         selling_price = self.selling_price_input.text()
         quantity = self.quantity_input.text()
         quantity_limit = self.quantity_limit_input.text()
-        self.db_manager.update_product(self.product_code, name, purchase_cost, selling_price, quantity, quantity_limit)
+        self.product.name = name
+        self.product.purchase_cost = purchase_cost
+        self.product.selling_price = selling_price
+        self.product.quantity = quantity
+        self.product.quantity_limit = quantity_limit
+        self.db_manager.update_product(self.product)
         self._close()
     
     def _close(self):
@@ -423,6 +338,7 @@ class ProductWindow(QWidget):
             self.callback()
         self.db_manager.close()
         self.close()
+
 class MainWindow(QMainWindow):
     '''
     This class represents the main window of the application.
@@ -445,7 +361,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         
         # Initialize database manager
-        self.db_manager = DatabaseManager('products.db')
+        self.db_manager = database.DatabaseManager()
 
         # Load initial data into table
         self.load_table_data()
@@ -457,15 +373,19 @@ class MainWindow(QMainWindow):
 
 
     def load_table_data(self):
-        data = self.db_manager.fetch_all()
+        data = self.db_manager.get_all_products()
         self.ui.update_table(data)
 
     def filter_table_data(self):
         search_text = self.ui.SearchBox.text()
         category = self.ui.CategoryBox.currentText()
         manufacturer = self.ui.CompanyBox.currentText()
-        filtered_data = self.db_manager.fetch_filtered(search_text)
-        self.ui.update_table(filtered_data)
+        all_products = self.db_manager.get_all_products()
+        filtered_products = []
+        for product in all_products:
+            if search_text.lower() in product.name.lower() and (category == "All" or product.category.name == category) and (manufacturer == "All" or product.company.company_name == manufacturer):
+                filtered_products.append(product)
+        self.ui.update_table(filtered_products)
 
     def closeEvent(self, event):
         self.db_manager.close()
