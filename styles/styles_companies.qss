@@ -1,10 +1,29 @@
+QTableWidget QHeaderView::section {
+    background-color: #22478B;
+    color: white;
+    border: none; /* Remove the border */
+}
+
+
+
 QLabel{
     font-family: Arial;
     font-size: 18px;
     color: #22478B;
     border-radius: 10px;   
 }
+
 QPushButton {
+    font-family: Arial; 
+    font-size: 14px;
+    color: white; 
+    background-color: #22478B;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+QPushButton#icon {
     background-color: transparent;
     border: none;
     border-radius: 10px;
@@ -26,4 +45,9 @@ QLineEdit {
     border-radius: 10px;
     padding: 5px;
     border: 2px solid #22478B;
+}
+
+QInputDialog {
+    background-color: #fff;
+    border-width: 10000px;
 }
