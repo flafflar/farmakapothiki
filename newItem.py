@@ -1,73 +1,11 @@
 import sys
-import sqlite3
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize)
 from PySide6.QtGui import (QFont)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
     QLineEdit, QMainWindow, QPushButton, QSizePolicy,
     QVBoxLayout, QWidget)
-
-class DatabaseManager:
-    def __init__(self, db_name):
-        '''
-        This method initializes the database manager.
-        
-        Args:
-            db_name: The name of the database file.
-            
-        Returns:
-            None
-        '''
-        self.conn = sqlite3.connect(db_name)
-        self.cur = self.conn.cursor()
-
-    def get_new_product_code(self):
-        '''
-        This method returns a new product code.
-
-        Args:
-            None
-
-        Returns:
-            product_code: The new product code
-        '''
-        self.cur.execute('SELECT MAX(product_code) FROM products')
-        result = self.cur.fetchone()
-        if result[0] is None:
-            return "P000001"
-        else:
-            result = int(result[0][1:]) + 1
-            return "P" + str(result).zfill(6)
-        
-    def insert_product(self, product_code, name, type, cost, sell_price, quantity, quantity_limit):
-        '''
-        This method inserts a new product to the database.
-
-        Args:
-            product_code: The product code
-            name: The name of the product
-            type: The type of the product
-            cost: The cost of the product
-            sell_price: The selling price of the product
-            quantity: The quantity of the product
-            quantity_limit: The quantity limit of the product
-
-        Returns:
-            None
-        '''
-        self.cur.execute('INSERT INTO products VALUES (?, ?, ?, ?, ?, ?, ?)', (product_code, name, cost, sell_price, quantity, quantity_limit, type))
-        self.conn.commit()
-
-    def close(self):
-        '''
-        This method closes the database connection.
-
-        Args:
-            None
-
-        Returns:
-            None
-        '''
-        self.conn.close()
+import database
+import datetime
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -91,7 +29,7 @@ class Ui_MainWindow(object):
         font = QFont()
         font.setPointSize(14)
         self.label.setFont(font)
-        self.db_manager = DatabaseManager('products.db')
+        self.db_manager = database.DatabaseManager()
         self.horizontalLayout.addWidget(self.label)
 
         self.product_code_label = QLabel(self.centralwidget)
@@ -212,8 +150,17 @@ class Ui_MainWindow(object):
         sell_price = self.sellPrice.text()
         quantity = self.quantityLine.text()
         quantity_limit = self.quantityLimitLine.text()
-
-        self.db_manager.insert_product(product_code, name, type, cost, sell_price, quantity, quantity_limit)
+        #TODO: Fix when company and category are implemented
+        category = database.Category(1, "None")
+        company = database.Company(1, "None")
+        if type == "Προϊόν":
+            product = database.Product(product_code, name, cost, sell_price, quantity, quantity_limit, company, category)
+            self.db_manager.insert_product(product)
+        else:
+            #TODO: Fix when batch is implemented
+            # batch = database.DrugBatch(1, product_code, quantity, datetime.datetime.now())
+            drug = database.Drug(product_code, name, cost, sell_price, quantity, quantity_limit, company, category, True, [])
+            self.db_manager.insert_drug(drug)
         self.close()
     
     def close(self):
@@ -221,16 +168,21 @@ class Ui_MainWindow(object):
         sys.exit()
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         
         # Initialize database manager
-        self.db_manager = DatabaseManager('products.db')
-
-        self.product_code = self.db_manager.get_new_product_code()
-        self.ui.product_code_label.setText(str(self.product_code))
+        self.db_manager = database.DatabaseManager()
+        products = self.db_manager.get_all_products()
+        self.product_code = 0
+        for product in products:
+            if product.product_code_int > self.product_code:
+                self.product_code = product.product_code_int
+        self.product_code += 1
+        self.ui.product_code_label.setText(f"P{str(self.product_code).zfill(6)}")
 
     def closeEvent(self, event):
         self.db_manager.close()

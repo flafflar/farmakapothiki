@@ -1,5 +1,4 @@
 import sys
-import sqlite3
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt)
 from PySide6.QtGui import (QFont, QIcon)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QHeaderView,
