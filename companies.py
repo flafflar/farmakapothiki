@@ -5,6 +5,11 @@ import sys
 from database import DatabaseManager
 
 class CompaniesWindow(QWidget):
+    """Initialize the CompaniesWindow.
+
+    Args:
+       db (DatabaseManager): The database manager instance.
+    """
     def __init__(self, db):
         super().__init__()
         self.db = db
@@ -51,6 +56,7 @@ class CompaniesWindow(QWidget):
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable & ~Qt.ItemIsSelectable)
 
     def load_data(self):
+        """Load data from the database and populate the table widget."""
         self.table_widget.setRowCount(0)
         companies = self.db.get_all_companies()
 
@@ -75,6 +81,11 @@ class CompaniesWindow(QWidget):
             self.table_widget.setCellWidget(row, 3, icon2_button)
 
     def icon1_clicked(self, row):
+        """Handle the click event for the icon1 button.
+
+        Args:
+            row (int): The row index of the clicked button.
+        """
         CompanyCode = self.table_widget.item(row, 0).text()[1:]  # Remove the 'S' prefix
         company = self.db.get_company(CompanyCode)
         if company:
@@ -83,6 +94,12 @@ class CompaniesWindow(QWidget):
             QMessageBox.warning(self, "Error", "Η εταιρεία δεν βρέθηκε")
 
     def icon2_clicked(self, row, code):
+        """Handle the click event for the icon2 button.
+
+        Args:
+            row (int): The row index of the clicked button.
+            code (int): The company code.
+        """
         new_name, ok = QInputDialog.getText(self, f"Επεξεργασία εταιρείας", f"Κωδικός: S{int(code):04d}\nΝέο όνομα εταιρείας:", text=self.db.get_company(code)[1])
         if ok:
             self.db.update_company(code, new_name)
