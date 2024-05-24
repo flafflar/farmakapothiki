@@ -5,6 +5,12 @@ import sys
 from database import DatabaseManager
 
 class categoriesWindow(QWidget):
+    """
+    Initializes the CategoriesWindow.
+
+    Args:
+        db (DatabaseManager): The database manager instance.
+    """
     def __init__(self, db):
         super().__init__()
         self.db = db
@@ -50,6 +56,9 @@ class categoriesWindow(QWidget):
                     item.setFlags(item.flags() & ~Qt.ItemIsEditable & ~Qt.ItemIsSelectable)
 
     def load_data(self):
+        """
+        Loads data from the database and populates the table widget.
+        """
         self.table_widget.setRowCount(0)
         categories = self.db.get_all_categories()
 
@@ -74,6 +83,12 @@ class categoriesWindow(QWidget):
             self.table_widget.setCellWidget(row, 3, icon2_button)
 
     def icon1_clicked(self, row):
+        """
+        Handles the click event for the icon1 button.
+
+        Args:
+            row (int): The row index of the clicked button.
+        """
         categoryCode = self.table_widget.item(row, 0).text()[1:]  # Remove the 'C' prefix
         category = self.db.get_category(categoryCode)
         if category:
@@ -82,6 +97,13 @@ class categoriesWindow(QWidget):
             QMessageBox.warning(self, "Error", "Η εταιρεία δεν βρέθηκε")
 
     def icon2_clicked(self, row, code):
+        """
+        Handles the click event for the icon2 button.
+
+        Args:
+            row (int): The row index of the clicked button.
+            code (int): The category code.
+        """
         new_name, ok = QInputDialog.getText(self, f"Επεξεργασία κατηγορίας", f"Κωδικός: C{int(code):04d}\nΝέο όνομα κατηγορίας:", text=self.db.get_category(code)[1])
         if ok:
             self.db.update_category(code, new_name)
