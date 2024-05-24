@@ -525,6 +525,19 @@ class DatabaseManager:
             INSERT INTO Product (Name, PurchaseCost, SellingPrice, Quantity, QuantityLimit, CompanyCode, CategoryCode) VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code, product.category.category_code))
         self.conn.commit()
+    
+    def insert_drug(self, drug: Drug):
+        """
+        Inserts a new drug into the Drug and Product tables in the database.
+        
+        Args:
+            drug (Drug): The Drug object containing the details of the drug to insert.
+        """
+        self.insert_product(drug)
+        self.c.execute('''
+            INSERT INTO Drug (ProductCode, Quality) VALUES (?, ?)
+        ''', (drug.product_code_int, int(drug.quality)))
+        self.conn.commit()
 
     def insert_drug_batch(self, batch: DrugBatch):
         """
