@@ -497,7 +497,7 @@ class DatabaseManager:
             list[Product]: A list of Product objects representing all products in the database.
         """
         self.c.execute('SELECT * FROM Product')
-        products = [Product(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7]) for row in self.c.fetchall()]
+        products = [Product(row[0], row[1], row[2], row[3], row[4], row[5], self.get_company_by_code(row[6]), self.get_category_by_code(row[7])) for row in self.c.fetchall()]
         return products
 
     def update_product(self, product: Product):
