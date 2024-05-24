@@ -547,9 +547,44 @@ class DatabaseManager:
             UPDATE DrugBatch SET ProductCode = ?, Quantity = ?, ExpirationDate = ? WHERE BatchCode = ?
         ''', (batch.product_code, batch.quantity, batch.expiration_date, batch.batch_code))
         self.conn.commit()
+    
+    def get_company_by_code(self, company_code: int) -> typing.Optional[Company]:
+        """
+        Retrieves a company from the Company table in the database by its company code.
+        
+        Args:
+            company_code (int): The company code of the company to retrieve.
+        
+        Returns:
+            Company: A Company object representing the company with the given company code, if found.
+            None: If no company with the given company code is found.
+        """
+        self.c.execute('SELECT * FROM Company WHERE CompanyCode = ?', (company_code,))
+        row = self.c.fetchone()
+        if row:
+            return Company(row[0], row[1])
+        return None
+    
+    def get_category_by_code(self, category_code: int) -> typing.Optional[Category]:
+        """
+        Retrieves a category from the Category table in the database by its category code.
+        
+        Args:
+            category_code (int): The category code of the category to retrieve.
+        
+        Returns:
+            Category: A Category object representing the category with the given category code, if found.
+            None: If no category with the given category code is found.
+        """
+        self.c.execute('SELECT * FROM Category WHERE CategoryCode = ?', (category_code,))
+        row = self.c.fetchone()
+        if row:
+            return Category(row[0], row[1])
+        return None
 
     def close(self):
         """
         Closes the connection to the SQLite3 database.
         """
         self.conn.close()
+    
