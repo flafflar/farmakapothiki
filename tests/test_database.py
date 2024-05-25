@@ -23,6 +23,40 @@ def users():
     ]
     return users
 
+def test_get_all_users(db, users):
+    # Insert the initial users into the database
+    for user in users:
+        db.insert_user(user)
+
+    # Fetch all users from the database
+    all_users = db.get_all_users()
+
+    # Verify the number of users retrieved
+    assert len(all_users) == len(users)
+
+    # Verify each user's details and permissions
+    for user in users:
+        u = [u for u in all_users if u.id == user.id]
+        assert len(u) == 1
+        assert u[0].username == user.username
+        assert u[0].full_name == user.full_name
+        assert u[0].password == user.password
+
+        # Check permissions
+        user_permissions = u[0].permissions
+        assert user_permissions.view_stock == user.permissions.view_stock
+        assert user_permissions.edit_stock == user.permissions.edit_stock
+        assert user_permissions.add_products == user.permissions.add_products
+        assert user_permissions.view_notifications == user.permissions.view_notifications
+        assert user_permissions.create_client_list == user.permissions.create_client_list
+        assert user_permissions.view_orders == user.permissions.view_orders
+        assert user_permissions.add_orders == user.permissions.add_orders
+        assert user_permissions.change_order_state == user.permissions.change_order_state
+        assert user_permissions.view_bills == user.permissions.view_bills
+        assert user_permissions.create_bills == user.permissions.create_bills
+        assert user_permissions.view_salaries == user.permissions.view_salaries
+        assert user_permissions.user_administration == user.permissions.user_administration
+
 
 def test_insert_user(db, users):
     for user in users:
@@ -108,6 +142,34 @@ def test_update_user(db, users):
         assert user_permissions.view_salaries == user.permissions.view_salaries
         assert user_permissions.user_administration == user.permissions.user_administration
 
+def test_get_user_by_username(db, users):
+    # Insert the initial users into the database
+    for user in users:
+        db.insert_user(user)
+
+    # Fetch each user by username and verify the retrieved data
+    for user in users:
+        fetched_user = db.get_user_by_username(user.username)
+        assert fetched_user is not None
+        assert fetched_user.id == user.id
+        assert fetched_user.username == user.username
+        assert fetched_user.full_name == user.full_name
+        assert fetched_user.password == user.password
+
+        # Check permissions
+        user_permissions = fetched_user.permissions
+        assert user_permissions.view_stock == user.permissions.view_stock
+        assert user_permissions.edit_stock == user.permissions.edit_stock
+        assert user_permissions.add_products == user.permissions.add_products
+        assert user_permissions.view_notifications == user.permissions.view_notifications
+        assert user_permissions.create_client_list == user.permissions.create_client_list
+        assert user_permissions.view_orders == user.permissions.view_orders
+        assert user_permissions.add_orders == user.permissions.add_orders
+        assert user_permissions.change_order_state == user.permissions.change_order_state
+        assert user_permissions.view_bills == user.permissions.view_bills
+        assert user_permissions.create_bills == user.permissions.create_bills
+        assert user_permissions.view_salaries == user.permissions.view_salaries
+        assert user_permissions.user_administration == user.permissions.user_administration
 
 
 @pytest.fixture
