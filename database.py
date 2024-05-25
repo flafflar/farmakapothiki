@@ -9,6 +9,7 @@ class Company:
     Attributes:
         company_code (str): The unique identifier for the company.
         name (str): The name of the company.
+        company_code_int (int): The company code as an integer.
     """
     def __init__(self, company_code: str, name: str):
         """
@@ -40,6 +41,7 @@ class Category:
     Attributes:
         category_code (str): The unique identifier for the category.
         name (str): The name of the category.
+        category_code_int (int): The category code as an integer.
     """
     def __init__(self, category_code: str, name: str):
         """
@@ -431,6 +433,7 @@ class DatabaseManager:
     def insert_user(self, user: User):
         """
         Inserts a new user into the User and UserPermissions tables in the database.
+        Given user ID is discarded and a new one is generated automatically.
 
         Args:
             user (User): The User object containing the details and permissions of the user to insert.
@@ -472,6 +475,7 @@ class DatabaseManager:
     def insert_company(self, company: Company):
         """
         Inserts a new company into the Company table in the database.
+        Given company code is discarded and a new one is generated automatically.
 
         Args:
             company (Company): The Company object containing the name of the company to insert.
@@ -507,7 +511,8 @@ class DatabaseManager:
     def insert_category(self, category: Category):
         """
         Inserts a new category into the Category table in the database.
-        
+        Given category code is discarded and a new one is generated automatically.
+
         Args:
             category (Category): The Category object containing the name of the category to insert.
         """
@@ -530,6 +535,7 @@ class DatabaseManager:
     def update_product(self, product: Product):
         """
         Updates a product's details in the Product table in the database.
+        Given product code is discarded and a new one is generated automatically.
 
         Args:
             product (Product): The Product object containing the updated details of the product.
@@ -542,6 +548,7 @@ class DatabaseManager:
     def insert_product(self, product: Product):
         """
         Inserts a new product into the Product table in the database.
+        Given product code is discarded and a new one is generated automatically.
         
         Args:
             product (Product): The Product object containing the details of the product to insert.
@@ -554,7 +561,8 @@ class DatabaseManager:
     def insert_drug(self, drug: Drug):
         """
         Inserts a new drug into the Drug and Product tables in the database.
-        
+        Given product code is discarded and a new one is generated automatically.
+
         Args:
             drug (Drug): The Drug object containing the details of the drug to insert.
         """
@@ -567,7 +575,8 @@ class DatabaseManager:
     def insert_drug_batch(self, batch: DrugBatch):
         """
         Inserts a new drug batch into the DrugBatch table in the database.
-        
+        Given batch code is discarded and a new one is generated automatically.
+
         Args:
             batch (DrugBatch): The DrugBatch object containing the details of the drug batch to insert.
         """
