@@ -18,8 +18,20 @@ class Company:
             company_code (str): The unique identifier for the company.
             name (str): The name of the company.
         """
+        if type(company_code) == int:
+            company_code = f"S{str(company_code).zfill(6)}"
         self.company_code = company_code
         self.name = name
+    
+    @property
+    def company_code_int(self) -> int:
+        """
+        Returns the company code as an integer.
+
+        Returns:
+            int: The company code as an integer.
+        """
+        return int(self.company_code[1:])
 
 class Category:
     """
@@ -37,8 +49,21 @@ class Category:
             category_code (str): The unique identifier for the category.
             name (str): The name of the category.
         """
+        if type(category_code) == int:
+            category_code = f"C{str(category_code).zfill(6)}"
         self.category_code = category_code
         self.name = name
+
+    @property
+    def category_code_int(self) -> int:
+        """
+        Returns the category code as an integer.
+
+        Returns:
+            int: The category code as an integer.
+        """
+        return int(self.category_code[1:])
+
 class Product:
     """
     Represents a product with a unique product code, name, purchase cost, selling price, quantity, quantity limit, company, and category.
@@ -307,7 +332,7 @@ class DatabaseManager:
         # Create DrugBatch table
         self.c.execute('''
             CREATE TABLE IF NOT EXISTS DrugBatch (
-                BatchCode INTEGER PRIMARY KEY,
+                BatchCode TEXT PRIMARY KEY,
                 ProductCode INTEGER,
                 Quantity INTEGER NOT NULL,
                 ExpirationDate TEXT NOT NULL,
@@ -476,7 +501,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             UPDATE Category SET Name = ? WHERE CategoryCode = ?
-        ''', (category.name, category.category_code))
+        ''', (category.name, category.category_code_int))
         self.conn.commit()
 
     def insert_category(self, category: Category):
@@ -511,7 +536,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             UPDATE Product SET Name = ?, PurchaseCost = ?, SellingPrice = ?, Quantity = ?, QuantityLimit = ?, CompanyCode = ?, CategoryCode = ? WHERE ProductCode = ?
-        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code, product.category.category_code, product.product_code_int))
+        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code_int, product.category.category_code, product.product_code_int))
         self.conn.commit()
 
     def insert_product(self, product: Product):
