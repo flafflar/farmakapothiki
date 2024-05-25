@@ -60,8 +60,25 @@ class Ui_MainWindow(object):
         self.TypeCombo.setObjectName(u"TypeCombo")
         self.TypeCombo.addItem("Φάρμακο")
         self.TypeCombo.addItem("Προϊόν")
-
+        self.TypeCombo.currentIndexChanged.connect(self.comboBoxChanged)
         self.verticalLayout_2.addWidget(self.TypeCombo)
+
+        self.quality_label = QLabel(self.centralwidget)
+        self.quality_label.setObjectName(u"quality_label")
+        self.quality_label.setText("Ποιότητα:")
+        self.verticalLayout_2.addWidget(self.quality_label)
+        self.quality_label.hide()
+
+        self.QualityCombo = QComboBox(self.centralwidget)
+        self.QualityCombo.setObjectName(u"qualityCombo")
+        self.QualityCombo.addItem("Πραγματικό")
+        self.QualityCombo.addItem("Φασόν")
+
+        self.QualityCombo.hide()
+        self.comboBoxChanged()
+
+        self.verticalLayout_2.addWidget(self.QualityCombo)
+
 
         self.label_4 = QLabel(self.centralwidget)
         self.label_4.setObjectName(u"label_4")
@@ -139,6 +156,14 @@ class Ui_MainWindow(object):
         self.cancelButton.setText(QCoreApplication.translate("MainWindow", u"\u0391\u03ba\u03cd\u03c1\u03c9\u03c3\u03b7", None))
         self.saveButton.setText(QCoreApplication.translate("MainWindow", u"\u0391\u03c0\u03bf\u03b8\u03ae\u03ba\u03b5\u03c5\u03c3\u03b7", None))
 
+    def comboBoxChanged(self):
+        if self.TypeCombo.currentText() == "Φάρμακο":
+            self.quality_label.show()
+            self.QualityCombo.show()
+        else:
+            self.quality_label.hide()
+            self.QualityCombo.hide()
+
     def cancelButtonClicked(self):
         self.close()
     
@@ -158,8 +183,8 @@ class Ui_MainWindow(object):
             self.db_manager.insert_product(product)
         else:
             #TODO: Fix when batch is implemented
-            # batch = database.DrugBatch(1, product_code, quantity, datetime.datetime.now())
-            drug = database.Drug(product_code, name, cost, sell_price, quantity, quantity_limit, company, category, True, [])
+            quality = 1 if self.QualityCombo.currentText() == "Πραγματικό" else 0
+            drug = database.Drug(product_code, name, cost, sell_price, quantity, quantity_limit, company, category, quality, [])
             self.db_manager.insert_drug(drug)
         self.close()
     
