@@ -1,10 +1,20 @@
-from database import Company, DatabaseManager, User, UserPermissions    
 import pytest
+from database import Category, Company, DatabaseManager, Product, User, UserPermissions
+import sqlite3
+
+class SQLiteDB:
+    def __init__(self, path):
+        self.con = sqlite3.connect(path)
+        self.cur = self.con.cursor()
+        self.path = path
 
 @pytest.fixture
-def db(tmp_path):
-    open(tmp_path / "database.sqlite", "w").close()
-    db = DatabaseManager(tmp_path / "database.sqlite")
+def sqlite_db(tmp_path):
+    return SQLiteDB(tmp_path / "database.sqlite")
+
+@pytest.fixture
+def db(sqlite_db):
+    db = DatabaseManager(sqlite_db.path)
     return db
 
 @pytest.fixture
@@ -61,7 +71,7 @@ def test_get_all_users(db, users):
 def test_insert_user(db, users):
     for user in users:
         db.insert_user(user)
-    
+
     all_users = db.get_all_users()  # Retrieve all users from the database
 
     assert len(all_users) == len(users)
@@ -201,7 +211,7 @@ def test_get_all_companies(db, companies):
 
 def test_update_company(db, companies):
     for company in companies:
-        db.insert_company(company) 
+        db.insert_company(company)
 
     for company in companies:
         company.name = company.name + "a"
@@ -217,3 +227,45 @@ def test_update_company(db, companies):
         assert c[0].name == company.name
 
 #TODO Fix the inserts since the main code takes random id values and the test code takes fixed id values
+
+@pytest.fixture
+def sample_categories():
+    return [
+        Category("", "Κατηγορία 1"),
+        Category("", "Κατηγορία 2"),
+        Category("", "Κατηγορία 3"),
+    ]
+
+def insert_categories(sqlite_db: SQLiteDB, categories: list[Category]):
+    for category in categories:
+        sqlite_db.cur.execute("INSERT INTO Category(Name) VALUES (?)", (category.name,))
+        category.category_code = f"C{sqlite_db.cur.lastrowid:06}"
+        sqlite_db.con.commit()
+
+def test_get_all_categories(sqlite_db: SQLiteDB, db: DatabaseManager, sample_categories: list[Category]):
+    for category in sample_categories:
+        sqlite_db.cur.execute("INSERT INTO Category(Name) VALUES (:name)", {"name": category.name})
+
+    categories = db.get_all_categories()
+
+    for category in categories:
+        c = [c for c in sample_categories if c.name == category.name]
+        assert len(c) == 1
+
+def test_update_category(sqlite_db: SQLiteDB, db: DatabaseManager, sample_categories: list[Category]):
+    insert_categories(sqlite_db, sample_categories)
+
+    for category in sample_categories:
+        category.name += " Updated"
+        db.update_category(category)
+
+    for category in sample_categories:
+        sqlite_db.cur.execute("SELECT Name FROM Category WHERE CategoryCode = ?", (category.category_code_int,))
+        assert sqlite_db.cur.fetchone()[0] == category.name
+
+def test_insert_category(sqlite_db: SQLiteDB, db: DatabaseManager, sample_categories: list[Category]):
+    for category in sample_categories:
+        db.insert_category(category)
+
+        sqlite_db.cur.execute("SELECT * FROM Category WHERE Name = ?", (category.name,))
+        assert len(sqlite_db.cur.fetchall()) == 1
