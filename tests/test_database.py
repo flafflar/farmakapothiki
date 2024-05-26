@@ -184,15 +184,21 @@ def test_get_user_by_username(db, users):
 
 @pytest.fixture
 def companies():
-    companies = [Company("S000121", "Drugs"), Company("S000122", "Food"), Company("S000123", "Clothes")]
-    return companies
+    return [
+        Company("", "Drugs"),
+        Company("", "Food"),
+        Company("", "Clothes")
+    ]
 
-
-
-def test_get_all_companies(db, companies):
-    # Insert companies into the database
+def insert_companies(sqlite_db: SQLiteDB, companies: list[Company]):
     for company in companies:
-        db.insert_company(company)
+        sqlite_db.cur.execute("INSERT INTO Company(Name) VALUES (?)", (company.name,))
+        company.company_code = f"S{sqlite_db.cur.lastrowid:06}"
+        sqlite_db.con.commit()
+
+def test_get_all_companies(sqlite_db, db, companies):
+    # Insert companies into the database
+    insert_companies(sqlite_db, companies)
 
     # Retrieve all companies using the method to be tested
     all_companies = db.get_all_companies()
@@ -206,18 +212,14 @@ def test_get_all_companies(db, companies):
         assert len(c) == 1
         assert c[0].name == company.name
 
-
-
-
-def test_update_company(db, companies):
-    for company in companies:
-        db.insert_company(company)
+def test_update_company(sqlite_db, db, companies):
+    insert_companies(sqlite_db, companies)
 
     for company in companies:
         company.name = company.name + "a"
         db.update_company(company)
-    all_companies = db.get_all_companies()
 
+    all_companies = db.get_all_companies()
 
     assert len(all_companies) == len(companies)
 
