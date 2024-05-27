@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QLabel, QApplication, QMessageBox
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
-import sqlite3
 import sys
+from database import DatabaseManager
 
 class LoginForm(QWidget):
     """A class for a login form widget.
@@ -70,8 +70,7 @@ class LoginForm(QWidget):
         self.setLayout(main_layout)
 
         self.login_button.clicked.connect(self.login)
-
-        self.conn = sqlite3.connect("DataBase/DataBase.db")
+        self.db = DatabaseManager()
     
 #-------Log In Button Logic-------
     def login(self):
@@ -79,15 +78,10 @@ class LoginForm(QWidget):
         username = self.username_input.text()
         password = self.password_input.text()
         
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT * FROM Users WHERE UserName=? AND Password=?", (username, password))
-        user = cursor.fetchone()
+        user = self.db.get_user_by_username(username)
 
-        if user:
+        if user and user.password == password:
             self.loginsuccess = True
-            cursor.execute("SELECT ID FROM Users WHERE UserName=? AND Password=?", (username, password))
-            logedid = cursor.fetchone()
-            print ("Login")
         else:
             self.username_input.clear()
             self.password_input.clear()
