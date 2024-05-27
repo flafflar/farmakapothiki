@@ -1,13 +1,15 @@
 from PySide6.QtWidgets import QVBoxLayout, QLabel, QCheckBox
 from PySide6.QtCore import Qt
-import sqlite3
+from database import DatabaseManager
 
 class PermissionsLayout(QVBoxLayout):
     """Custom layout for managing user permissions."""
-    def __init__(self, user_id):
+    def __init__(self, username):
         """Initialize the PermissionsLayout."""
         super().__init__()
-        self.user_id = user_id
+        self.username = username
+        self.db = DatabaseManager()
+
         self.addWidget(QLabel("Δικαιώματα:"))
         self.permission_checkboxes = []
         
@@ -68,15 +70,11 @@ class PermissionsLayout(QVBoxLayout):
             
     def load_permissions(self):
         """Load permissions from the database for the given user."""
-        conn = sqlite3.connect("DataBase/DataBase.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM Permissions WHERE User_ID = ?", (self.user_id,))
-        permissions = cursor.fetchone()
-        conn.close()
-
-        if permissions:
-            for index, permission_value in enumerate(permissions[1:]):
-                self.permission_checkboxes[index].setChecked(bool(permission_value))
+        user = self.db.get_user_by_username(self.username)
+        if user:
+            permissions = user.permissions
+            for index, checkbox in enumerate(self.permission_checkboxes):
+                checkbox.setChecked(getattr(permissions, checkbox.text().lower()))
 
     def enable_permission(self, checkbox, target_index):
         """Enable or disable a permission checkbox based on another checkbox's state."""
@@ -90,13 +88,10 @@ class PermissionsLayout(QVBoxLayout):
         """Update permission value in the database when a checkbox is toggled."""
         column_name = self.permission_columns[index]
         checkbox = self.permission_checkboxes[index]
-        if checkbox.isChecked():
-            value = 1    
-        else:
-            value = 0    
+        value = 1 if checkbox.isChecked() else 0
 
-        conn = sqlite3.connect("DataBase/DataBase.db")
-        cursor = conn.cursor()
-        cursor.execute(f"UPDATE Permissions SET {column_name} = ? WHERE User_ID = ?", (value, self.user_id))
-        conn.commit()
-        conn.close()
+        user = self.db.get_user_by_username(self.username)
+        if user:
+            user_id = user.id
+            permissions = {column_name: value}
+            self.db.update_user_permissions(user_id, permissions)

@@ -3,7 +3,7 @@ from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, QSize
 from user_dialog import UserInformationDialog
 from create_user_dialog import CreateUserDialog
-import sqlite3
+from database import DatabaseManager
 import sys
 
 
@@ -64,6 +64,7 @@ class AdministrationWindow(QWidget):
         self.setLayout(layout)
         #---
 
+        self.db = DatabaseManager()
         self.load_data()
 
 
@@ -71,18 +72,13 @@ class AdministrationWindow(QWidget):
         """Load user data into the table."""
         self.table_widget.setRowCount(0) # Clear the table
 
-        conn = sqlite3.connect("DataBase/DataBase.db") #DataBase Connection
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT id, username, fullname FROM users") #Fetch user data from database
-        users = cursor.fetchall()
-        conn.close()
+        users = self.db.get_all_users() # Fetch user data from database
 
         # Add user data to the table
-        for row, (id, username, fullname) in enumerate(users):
+        for row, user in enumerate(users):
             self.table_widget.insertRow(row)
-            self.table_widget.setItem(row, 0, QTableWidgetItem(username)) # Add username to the table
-            self.table_widget.setItem(row, 1, QTableWidgetItem(fullname)) # Add fullname to the table
+            self.table_widget.setItem(row, 0, QTableWidgetItem(user.username)) # Add username to the table
+            self.table_widget.setItem(row, 1, QTableWidgetItem(user.full_name)) # Add fullname to the table
 
             #--- Information Button
             icon1_button = QPushButton()
@@ -113,42 +109,19 @@ class AdministrationWindow(QWidget):
             dialog.setLayout(layout)
             dialog.exec()
 
-    def icon_edit_clicked(self, row):
+    def icon_edit_clicked(self, row, user):
         """Open user information dialog for editing when the edit icon is clicked."""
-        username_item = self.table_widget.item(row, 0)
+        username = user.username
+        password = user.password
+        fullname = user.full_name
 
-        if username_item:
-            username = username_item.text()
-            password = None
-            fullname_item = self.table_widget.item(row, 1) # Retrieve the fullname from the table at the given row
-            if fullname_item:
-                fullname = fullname_item.text()
+        dialog = UserInformationDialog(user.id, self)
+        dialog.username_lineedit.setText(username)
+        dialog.fullname_lineedit.setText(fullname)
+        dialog.password_lineedit.setText(password)
 
-            conn = sqlite3.connect("DataBase/DataBase.db") # Connect to DataBase
-            cursor = conn.cursor() # Create a cursor object to interact with the database
-
-
-            cursor.execute("SELECT password FROM users WHERE username=?", (username,)) #Fetch password
-            result = cursor.fetchone() # Keep the first result
-            if result:
-                password = result[0]
-            else:
-                QMessageBox.warning(self, "", f"Ο Χρήστης '{username}' δεν βρέθηκε.")
-                return  
-            
-            cursor.execute("SELECT id FROM users WHERE username=?", (username,)) # Fetch ID
-            result = cursor.fetchone()
-            if result:
-                user_id = result[0]
-            conn.close()
-
-            dialog = UserInformationDialog(user_id, self) #Open UserInformationDialog with fetched data
-            dialog.username_lineedit.setText(username)
-            dialog.fullname_lineedit.setText(fullname)
-            dialog.password_lineedit.setText(password)
-            
-            dialog.user_updated.connect(self.load_data)  # Connect the signal
-            dialog.exec()
+        dialog.user_updated.connect(self.load_data)
+        dialog.exec()
 
     def open_create_user(self):
      """Open the dialog for creating a new user."""

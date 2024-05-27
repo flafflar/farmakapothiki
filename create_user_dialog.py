@@ -1,7 +1,7 @@
-import sqlite3
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QPushButton, QApplication, QVBoxLayout, QDialog, QLabel, QLineEdit, QMessageBox
 from permissions import PermissionsLayout
+from database import DatabaseManager
 
 
 class CreateUserDialog(QDialog):
@@ -21,6 +21,8 @@ class CreateUserDialog(QDialog):
         """Initialize the CreateUserDialog."""
 
         super().__init__(parent)
+
+        self.db = DatabaseManager()
 
         self.setWindowTitle("Δημιουργία νέου Χρήστη")
 
@@ -51,42 +53,25 @@ class CreateUserDialog(QDialog):
         self.setLayout(self.layout)
 
     def create_user(self):
-     """Create a new user."""
-     username = self.username_lineedit.text()
-     password = self.password_lineedit.text()
-     fullname = self.fullname_lineedit.text()
+        """Create a new user."""
+        username = self.username_lineedit.text()
+        password = self.password_lineedit.text()
+        fullname = self.fullname_lineedit.text()
+     
+        try:
 
-     conn = sqlite3.connect("DataBase/DataBase.db") # Connect to the database
-     cursor = conn.cursor()
+            user_id = self.db.add_user(username, password, fullname)
 
-     try:
-        #---Insert user data into the database
-        cursor.execute("INSERT INTO Users (UserName, Password, FullName) VALUES (?, ?, ?)", (username, password, fullname))
-        conn.commit()
-        QMessageBox.information(self, "", "Επιτυχής δημιουργία χρήστη!")
+            permissions = [checkbox.isChecked() for checkbox in self.permissions_layout.permission_checkboxes]
 
-        #---Fetch the ID of the newly created user
-        cursor.execute("SELECT id FROM Users WHERE UserName = ?", (username,))
-        user_id = cursor.fetchone()[0]
+            self.db.set_user_permissions(user_id, permissions)
 
-        #---Get the permission values
-        permissions = [checkbox.isChecked() for checkbox in self.permissions_layout.permission_checkboxes]
-        permission_values = tuple(1 if perm else 0 for perm in permissions)
+            self.user_created.emit()
+            QMessageBox.information(self, "", "Επιτυχής δημιουργία χρήστη!")
+        except Exception as e:
+            QMessageBox.warning(self, "", "Αποτυχία δημιουργίας χρήστη")
 
-        #---Insert the permissions into the database
-        cursor.execute("""
-                INSERT INTO Permissions (User_ID, ViewStock, EditStock, AddItem, ViewNotifications, CreateClientList, 
-                                         ViewOrders, AddOrders, ChangeOrderState, ViewBills, Invoice, ViewSalaries, UserAdministration) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",(user_id,) + permission_values)
-
-        #---Emit the user_created signal
-        self.user_created.emit()
-        conn.commit()
-     except sqlite3.Error as e:
-        QMessageBox.warning(self, "Error", f"Αποτυχία δημιουργίας χρήστη: {e}")
-
-     conn.close()
-     self.close()
+        self.close()
 
 
 #--- Main to test the dialog
