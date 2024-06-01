@@ -1,18 +1,21 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 from PySide6.QtCore import Qt, Signal
-import sqlite3
 from permissions import PermissionsLayout
+from database import DatabaseManager, User
 
 class UserInformationDialog(QDialog):
     user_updated = Signal()
 
-    def __init__(self, user_id, parent=None):
+    def __init__(self, user_id, username, parent=None):
         super().__init__(parent)
+        self.db = DatabaseManager()
+        self.username = username
+
         self.setWindowTitle("Επεξεργασία χρήστη")
         self.setFixedSize(400, 440)
         self.user_id = user_id
 
-        with open("styles/userdstyles.qss", "r") as f:
+        with open("resources/styles/userdstyles.qss", "r") as f:
             self.setStyleSheet(f.read())
 
         layout = QVBoxLayout()
@@ -48,7 +51,7 @@ class UserInformationDialog(QDialog):
         layout.addLayout(namelayout)
 
         #---User Permissions
-        self.permissions_layout = PermissionsLayout(self.user_id)
+        self.permissions_layout = PermissionsLayout(self.username)
         self.permission_checkboxes = self.permissions_layout.permission_checkboxes
 
         layout.addLayout(self.permissions_layout)
@@ -70,33 +73,26 @@ class UserInformationDialog(QDialog):
         self.load_user_data() #Load user data
 
     def load_user_data(self):
-        conn = sqlite3.connect("DataBase/DataBase.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT UserName, FullName, Password FROM users WHERE ID = ?", (self.user_id,))
-        user_data = cursor.fetchone()
-        conn.close()
+        user = self.db.get_user_by_username(self.username)
+        if user:
+            self.username_lineedit.setText(user.username)
+            self.fullname_lineedit.setText(user.full_name)
+            self.password_lineedit.setText(user.password)
 
-        if user_data:
-            username, fullname, password = user_data
-            self.username_lineedit.setText(username)
-            self.fullname_lineedit.setText(fullname)
-            self.password_lineedit.setText(password)
-    
-        self.permissions_layout.load_permissions() # Load permissions
+        self.permissions_layout.load_permissions(user.username)
 
 
-    #_--Save Button Logic
+    #---Save Button Logic
     def save_clicked(self):
+    # Get username, fullname, and password from the fields
         username = self.username_lineedit.text()
         fullname = self.fullname_lineedit.text()
         password = self.password_lineedit.text()
 
-        # Update the user information in the database
-        conn = sqlite3.connect("DataBase/DataBase.db")
-        cursor = conn.cursor()
-        cursor.execute("UPDATE users SET UserName = ?, FullName = ?, Password = ? WHERE ID = ?", (username, fullname, password, self.user_id))
-        conn.commit()
-        conn.close()
+    # Get permissions from the checkboxes
+        permissions = self.permissions_layout.get_permissions()
+        user = User(id=self.user_id, username=username, full_name=fullname, password=password, permissions=permissions)
+        self.db.update_user(user)
 
         QMessageBox.information(self, "Επιτυχία", "Τα στοιχεία χρήστη ενημερώθηκαν με επιτυχία.")
         self.user_updated.emit()  # Emit the signal to notify that the user info has been updated
