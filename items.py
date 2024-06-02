@@ -1,6 +1,6 @@
 import sys
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize, Qt)
-from PySide6.QtGui import (QFont, QIcon)
+from PySide6.QtGui import (QFont, QIcon, QDoubleValidator)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QHeaderView,
     QLabel, QLayout, QLineEdit, QMainWindow,
     QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
@@ -282,6 +282,7 @@ class ProductWindow(QWidget):
         self.purchase_cost_label = QLabel("Κόστος Αγοράς:")
         self.purchase_cost_input = QLineEdit()
         self.purchase_cost_input.setText(str(self.product.purchase_cost))
+        self.purchase_cost_input.setValidator(QDoubleValidator())
         if not self.edit:
             self.purchase_cost_input.setDisabled(True)
         self.layout.addRow(self.purchase_cost_label, self.purchase_cost_input)
@@ -289,6 +290,7 @@ class ProductWindow(QWidget):
         self.selling_price_label = QLabel("Τιμή Πώλησης:")
         self.selling_price_input = QLineEdit()
         self.selling_price_input.setText(str(self.product.selling_price))
+        self.selling_price_input.setValidator(QDoubleValidator())
         if not self.edit:
             self.selling_price_input.setDisabled(True)
         self.layout.addRow(self.selling_price_label, self.selling_price_input)
@@ -296,12 +298,14 @@ class ProductWindow(QWidget):
         self.quantity_label = QLabel("Ποσότητα:")
         self.quantity_input = QLineEdit()
         self.quantity_input.setText(str(self.product.quantity))
+        self.quantity_input.setValidator(QDoubleValidator())
         if not self.edit:
             self.quantity_input.setDisabled(True)
         self.layout.addRow(self.quantity_label, self.quantity_input)
 
         self.quantity_limit_label = QLabel("Όριο Ποσότητας:")
         self.quantity_limit_input = QLineEdit()
+        self.quantity_limit_input.setValidator(QDoubleValidator())
         self.quantity_limit_input.setText(str(self.product.quantity_limit))
         if not self.edit:
             self.quantity_limit_input.setDisabled(True)
