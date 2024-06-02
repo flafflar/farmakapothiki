@@ -1,0 +1,39 @@
+QLabel{
+    font-family: Arial;
+    font-size: 18px;
+    color: #22478B;
+    border-radius: 10px;   
+}
+
+QCheckBox::indicator:unchecked {
+    border-radius: 2px; 
+    border: 2px solid #22478B;
+
+QCheckBox::indicator:checked {
+    border-radius: 2px; 
+    border: 2px solid #22478B;
+}
+}
+QPushButton {
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+QPushButton#create_user{
+    font-family: Arial; 
+    font-size: 14px;
+    color: white; 
+    background-color: #22478B ;
+    border-radius:10px;
+    margin-right:550px;
+    padding: 10px 20px;
+    max-width: 150px;
+}
+
+QLineEdit {
+    border-radius: 10px;
+    padding: 5px;
+    border: 2px solid #22478B;
+}
