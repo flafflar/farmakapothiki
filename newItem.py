@@ -1,6 +1,6 @@
 import sys
 from PySide6.QtCore import (QCoreApplication, QMetaObject, QSize)
-from PySide6.QtGui import (QFont)
+from PySide6.QtGui import (QFont, QDoubleValidator)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
     QLineEdit, QMainWindow, QPushButton, QSizePolicy,
     QVBoxLayout, QWidget)
@@ -80,12 +80,15 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.QualityCombo)
 
 
+        self.verticalLayout_2.addWidget(self.TypeCombo)
+
         self.label_4 = QLabel(self.centralwidget)
         self.label_4.setObjectName(u"label_4")
 
         self.verticalLayout_2.addWidget(self.label_4)
 
         self.costLine = QLineEdit(self.centralwidget)
+        self.costLine.setValidator(QDoubleValidator())
         self.costLine.setObjectName(u"costLine")
 
         self.verticalLayout_2.addWidget(self.costLine)
@@ -97,6 +100,7 @@ class Ui_MainWindow(object):
 
         self.sellPrice = QLineEdit(self.centralwidget)
         self.sellPrice.setObjectName(u"sellPrice")
+        self.sellPrice.setValidator(QDoubleValidator())
 
         self.verticalLayout_2.addWidget(self.sellPrice)
 
@@ -107,6 +111,7 @@ class Ui_MainWindow(object):
 
         self.quantityLine = QLineEdit(self.centralwidget)
         self.quantityLine.setObjectName(u"quantityLine")
+        self.quantityLine.setValidator(QDoubleValidator())
 
         self.verticalLayout_2.addWidget(self.quantityLine)
 
@@ -117,6 +122,7 @@ class Ui_MainWindow(object):
 
         self.quantityLimitLine = QLineEdit(self.centralwidget)
         self.quantityLimitLine.setObjectName(u"quantityLimitLine")
+        self.quantityLimitLine.setValidator(QDoubleValidator())
 
         self.verticalLayout_2.addWidget(self.quantityLimitLine)
 
@@ -185,6 +191,8 @@ class Ui_MainWindow(object):
             #TODO: Fix when batch is implemented
             quality = 1 if self.QualityCombo.currentText() == "Πραγματικό" else 0
             drug = database.Drug(product_code, name, cost, sell_price, quantity, quantity_limit, company, category, quality, [])
+            # batch = database.DrugBatch(1, product_code, quantity, datetime.datetime.now())
+            drug = database.Drug(product_code, name, cost, sell_price, quantity, quantity_limit, company, category, True, [])
             self.db_manager.insert_drug(drug)
         self.close()
     
