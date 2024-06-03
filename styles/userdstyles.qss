@@ -1,0 +1,20 @@
+QDialog {
+    font-family: Arial;     
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+QLineEdit {
+    font-family: Arial;     
+    background-color: #fff;
+    border: 1px solid #ccc;
+}
+QPushButton{
+    font-family: Arial; 
+    background-color: #22478B;
+    color: #fff;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+QPushButton:hover {
+    background-color: #0056b3;
+}
