@@ -82,14 +82,14 @@ class AdministrationWindow(QWidget):
 
             #--- Information Button
             icon1_button = QPushButton()
-            icon1_button.setIcon(QIcon(QPixmap("resources/icons/icon_i.png")))
+            icon1_button.setIcon(QIcon(QPixmap("icons/icon_i.png")))
             icon1_button.setIconSize(QSize(24, 24))
             icon1_button.clicked.connect(lambda _, row=row: self.icon_info_clicked(row))
             self.table_widget.setCellWidget(row, 2, icon1_button)
 
             #--- Edit Button
             icon2_button = QPushButton()
-            icon2_button.setIcon(QIcon(QPixmap("resources/icons/icon_pen.png")))
+            icon2_button.setIcon(QIcon(QPixmap("icons/icon_pen.png")))
             icon2_button.setIconSize(QSize(24, 24))
             icon2_button.clicked.connect(lambda _, row=row, user=user: self.icon_edit_clicked(row, user))
             self.table_widget.setCellWidget(row, 3, icon2_button)
