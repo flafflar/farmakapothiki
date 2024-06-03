@@ -3,6 +3,7 @@ from PySide6.QtCore import Qt, QRegularExpression
 from PySide6.QtGui import QIcon, QRegularExpressionValidator
 import sys
 from database import DatabaseManager
+from main_window import MainWindow
 
 class LoginForm(QWidget):
     """A class for a login form widget.
@@ -88,12 +89,21 @@ class LoginForm(QWidget):
 
         if user and user.password == password:
             self.loginsuccess = True
+            self.open_main_window(username)
         else:
             self.username_input.clear()
             self.password_input.clear()
             self.username_input.setFocus()
+            QMessageBox.warning(self, "Σφάλμα", "Λάθος όνομα χρήστη ή κωδικός.")
             self.loginsuccess = False
-            print ("Incorrect username or password")
+
+    def open_main_window(self, username):
+        """Open the main window and close the login form."""
+        self.main_window = MainWindow(username)
+        with open("styles/mainwindowstyles.qss", "r") as f:
+            self.main_window.setStyleSheet(f.read())
+        self.main_window.show()
+        self.close()
 
 
 #-------Runs and closes the app-------
