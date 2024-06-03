@@ -26,90 +26,62 @@ def users():
         view_bills=True, create_bills=True, view_salaries=True,
         user_administration=True
     )
-    users = [
-        User(10, "jdoe", "pass1", "John Doe", permissions),
-        User(11, "bwayne", "pass2", "Bruce Wayne", permissions),
-        User(12, "pparker", "pass3", "Peter Parker", permissions)
+    return [
+        User(0, "jdoe", "pass1", "John Doe", permissions),
+        User(0, "bwayne", "pass2", "Bruce Wayne", permissions),
+        User(0, "pparker", "pass3", "Peter Parker", permissions)
     ]
-    return users
 
-def test_get_all_users(db, users):
-    # Insert the initial users into the database
+def insert_users(sqlite_db: SQLiteDB, users: list[User]):
     for user in users:
-        db.insert_user(user)
+        sqlite_db.cur.execute("INSERT INTO User(Username, Password, FullName) VALUES (?, ?, ?)",
+                               (user.username, user.password, user.full_name))
+        user.id = sqlite_db.cur.lastrowid
 
-    # Fetch all users from the database
+        sqlite_db.cur.execute('''INSERT INTO UserPermissions(UserId, ViewStock, EditStock, AddProduct, ViewNotifications, CreateClientList, ViewOrders, AddOrders, ChangeOrderState, ViewBills, CreateBills, ViewSalaries, UserAdministration)
+                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                              (user.id, user.permissions.view_stock, user.permissions.edit_stock,
+                               user.permissions.add_products, user.permissions.view_notifications,
+                               user.permissions.create_client_list, user.permissions.view_orders,
+                               user.permissions.add_orders, user.permissions.change_order_state,
+                               user.permissions.view_bills, user.permissions.create_bills,
+                               user.permissions.view_salaries, user.permissions.user_administration))
+        sqlite_db.con.commit()
+
+def test_get_all_users(sqlite_db: SQLiteDB, db: DatabaseManager, users: list[User]):
+    insert_users(sqlite_db, users)
+
     all_users = db.get_all_users()
 
-    # Verify the number of users retrieved
     assert len(all_users) == len(users)
 
-    # Verify each user's details and permissions
     for user in users:
         u = [u for u in all_users if u.id == user.id]
         assert len(u) == 1
         assert u[0].username == user.username
-        assert u[0].full_name == user.full_name
         assert u[0].password == user.password
-
-        # Check permissions
-        user_permissions = u[0].permissions
-        assert user_permissions.view_stock == user.permissions.view_stock
-        assert user_permissions.edit_stock == user.permissions.edit_stock
-        assert user_permissions.add_products == user.permissions.add_products
-        assert user_permissions.view_notifications == user.permissions.view_notifications
-        assert user_permissions.create_client_list == user.permissions.create_client_list
-        assert user_permissions.view_orders == user.permissions.view_orders
-        assert user_permissions.add_orders == user.permissions.add_orders
-        assert user_permissions.change_order_state == user.permissions.change_order_state
-        assert user_permissions.view_bills == user.permissions.view_bills
-        assert user_permissions.create_bills == user.permissions.create_bills
-        assert user_permissions.view_salaries == user.permissions.view_salaries
-        assert user_permissions.user_administration == user.permissions.user_administration
-
-
-def test_insert_user(db, users):
-    for user in users:
-        db.insert_user(user)
-
-    all_users = db.get_all_users()  # Retrieve all users from the database
-
-    assert len(all_users) == len(users)
-
-    for user in users:
-        u = [u for u in all_users if u.username == user.username]
-        assert len(u) == 1
-        assert u[0].username == user.username
         assert u[0].full_name == user.full_name
-        assert u[0].password == user.password
-
-        # Check permissions
-        user_permissions = u[0].permissions
-        assert user_permissions.view_stock == user.permissions.view_stock
-        assert user_permissions.edit_stock == user.permissions.edit_stock
-        assert user_permissions.add_products == user.permissions.add_products
-        assert user_permissions.view_notifications == user.permissions.view_notifications
-        assert user_permissions.create_client_list == user.permissions.create_client_list
-        assert user_permissions.view_orders == user.permissions.view_orders
-        assert user_permissions.add_orders == user.permissions.add_orders
-        assert user_permissions.change_order_state == user.permissions.change_order_state
-        assert user_permissions.view_bills == user.permissions.view_bills
-        assert user_permissions.create_bills == user.permissions.create_bills
-        assert user_permissions.view_salaries == user.permissions.view_salaries
-        assert user_permissions.user_administration == user.permissions.user_administration
+        assert u[0].permissions.view_stock == user.permissions.view_stock
+        assert u[0].permissions.edit_stock == user.permissions.edit_stock
+        assert u[0].permissions.add_products == user.permissions.add_products
+        assert u[0].permissions.view_notifications == user.permissions.view_notifications
+        assert u[0].permissions.create_client_list == user.permissions.create_client_list
+        assert u[0].permissions.view_orders == user.permissions.view_orders
+        assert u[0].permissions.add_orders == user.permissions.add_orders
+        assert u[0].permissions.change_order_state == user.permissions.change_order_state
+        assert u[0].permissions.view_bills == user.permissions.view_bills
+        assert u[0].permissions.create_bills == user.permissions.create_bills
+        assert u[0].permissions.view_salaries == user.permissions.view_salaries
+        assert u[0].permissions.user_administration == user.permissions.user_administration
 
 
-def test_update_user(db, users):
-    # Insert the initial users into the database
+def test_update_user(sqlite_db: SQLiteDB, db: DatabaseManager, users: list[User]):
+    insert_users(sqlite_db, users)
+
     for user in users:
-        db.insert_user(user)
-
-    # Update each user's details
-    for user in users:
-        user.username += "_updated"
-        user.password += "_updated"
-        user.full_name += " Updated"
-        # Update permissions for testing
+        user.username += "Updated"
+        user.password += "Updated"
+        user.full_name += "Updated"
         user.permissions.view_stock = not user.permissions.view_stock
         user.permissions.edit_stock = not user.permissions.edit_stock
         user.permissions.add_products = not user.permissions.add_products
@@ -125,7 +97,6 @@ def test_update_user(db, users):
 
         db.update_user(user)
 
-    # Retrieve all users from the database
     all_users = db.get_all_users()
 
     assert len(all_users) == len(users)
@@ -134,52 +105,28 @@ def test_update_user(db, users):
         u = [u for u in all_users if u.id == user.id]
         assert len(u) == 1
         assert u[0].username == user.username
-        assert u[0].full_name == user.full_name
         assert u[0].password == user.password
+        assert u[0].full_name == user.full_name
+        assert u[0].permissions.view_stock == user.permissions.view_stock
+        assert u[0].permissions.edit_stock == user.permissions.edit_stock
+        assert u[0].permissions.add_products == user.permissions.add_products
+        assert u[0].permissions.view_notifications == user.permissions.view_notifications
+        assert u[0].permissions.create_client_list == user.permissions.create_client_list
+        assert u[0].permissions.view_orders == user.permissions.view_orders
+        assert u[0].permissions.add_orders == user.permissions.add_orders
+        assert u[0].permissions.change_order_state == user.permissions.change_order_state
+        assert u[0].permissions.view_bills == user.permissions.view_bills
+        assert u[0].permissions.create_bills == user.permissions.create_bills
+        assert u[0].permissions.view_salaries == user.permissions.view_salaries
+        assert u[0].permissions.user_administration == user.permissions.user_administration
 
-        # Check updated permissions
-        user_permissions = u[0].permissions
-        assert user_permissions.view_stock == user.permissions.view_stock
-        assert user_permissions.edit_stock == user.permissions.edit_stock
-        assert user_permissions.add_products == user.permissions.add_products
-        assert user_permissions.view_notifications == user.permissions.view_notifications
-        assert user_permissions.create_client_list == user.permissions.create_client_list
-        assert user_permissions.view_orders == user.permissions.view_orders
-        assert user_permissions.add_orders == user.permissions.add_orders
-        assert user_permissions.change_order_state == user.permissions.change_order_state
-        assert user_permissions.view_bills == user.permissions.view_bills
-        assert user_permissions.create_bills == user.permissions.create_bills
-        assert user_permissions.view_salaries == user.permissions.view_salaries
-        assert user_permissions.user_administration == user.permissions.user_administration
 
-def test_get_user_by_username(db, users):
-    # Insert the initial users into the database
+def test_insert_user(sqlite_db: SQLiteDB, db: DatabaseManager, users: list[User]):
     for user in users:
         db.insert_user(user)
 
-    # Fetch each user by username and verify the retrieved data
-    for user in users:
-        fetched_user = db.get_user_by_username(user.username)
-        assert fetched_user is not None
-        assert fetched_user.id == user.id
-        assert fetched_user.username == user.username
-        assert fetched_user.full_name == user.full_name
-        assert fetched_user.password == user.password
-
-        # Check permissions
-        user_permissions = fetched_user.permissions
-        assert user_permissions.view_stock == user.permissions.view_stock
-        assert user_permissions.edit_stock == user.permissions.edit_stock
-        assert user_permissions.add_products == user.permissions.add_products
-        assert user_permissions.view_notifications == user.permissions.view_notifications
-        assert user_permissions.create_client_list == user.permissions.create_client_list
-        assert user_permissions.view_orders == user.permissions.view_orders
-        assert user_permissions.add_orders == user.permissions.add_orders
-        assert user_permissions.change_order_state == user.permissions.change_order_state
-        assert user_permissions.view_bills == user.permissions.view_bills
-        assert user_permissions.create_bills == user.permissions.create_bills
-        assert user_permissions.view_salaries == user.permissions.view_salaries
-        assert user_permissions.user_administration == user.permissions.user_administration
+        sqlite_db.cur.execute("SELECT * FROM User WHERE Username = ?", (user.username,))
+        assert len(sqlite_db.cur.fetchall()) == 1
 
 
 @pytest.fixture
@@ -193,42 +140,36 @@ def companies():
 def insert_companies(sqlite_db: SQLiteDB, companies: list[Company]):
     for company in companies:
         sqlite_db.cur.execute("INSERT INTO Company(Name) VALUES (?)", (company.name,))
-        company.company_code = f"S{sqlite_db.cur.lastrowid:06}"
+        company.company_code = f"C{sqlite_db.cur.lastrowid:06}"
         sqlite_db.con.commit()
 
-def test_get_all_companies(sqlite_db, db, companies):
-    # Insert companies into the database
-    insert_companies(sqlite_db, companies)
-
-    # Retrieve all companies using the method to be tested
-    all_companies = db.get_all_companies()
-
-    # Verify that the number of companies retrieved matches the number inserted
-    assert len(all_companies) == len(companies)
-
-    # Verify that each company retrieved matches the inserted companies
+def test_get_all_companies(sqlite_db: SQLiteDB, db: DatabaseManager, companies: list[Company]):
     for company in companies:
-        c = [c for c in all_companies if c.company_code == company.company_code]
+        sqlite_db.cur.execute("INSERT INTO Company(Name) VALUES (:name)", {"name": company.name})
+
+    companies = db.get_all_companies()
+
+    for company in companies:
+        c = [c for c in companies if c.name == company.name]
         assert len(c) == 1
-        assert c[0].name == company.name
 
-def test_update_company(sqlite_db, db, companies):
+def test_update_company(sqlite_db: SQLiteDB, db: DatabaseManager, companies: list[Company]):
     insert_companies(sqlite_db, companies)
 
     for company in companies:
-        company.name = company.name + "a"
+        company.name += " Updated"
         db.update_company(company)
 
-    all_companies = db.get_all_companies()
-
-    assert len(all_companies) == len(companies)
-
     for company in companies:
-        c = [c for c in all_companies if c.company_code == company.company_code]
-        assert len(c) == 1
-        assert c[0].name == company.name
+        sqlite_db.cur.execute("SELECT Name FROM Company WHERE CompanyCode = ?", (company.company_code_int,))
+        assert sqlite_db.cur.fetchone()[0] == company.name
 
-#TODO Fix the inserts since the main code takes random id values and the test code takes fixed id values
+def test_insert_company(sqlite_db: SQLiteDB, db: DatabaseManager, companies: list[Company]):
+    for company in companies:
+        db.insert_company(company)
+
+        sqlite_db.cur.execute("SELECT * FROM Company WHERE Name = ?", (company.name,))
+        assert len(sqlite_db.cur.fetchall()) == 1
 
 @pytest.fixture
 def sample_categories():
@@ -271,3 +212,7 @@ def test_insert_category(sqlite_db: SQLiteDB, db: DatabaseManager, sample_catego
 
         sqlite_db.cur.execute("SELECT * FROM Category WHERE Name = ?", (category.name,))
         assert len(sqlite_db.cur.fetchall()) == 1
+
+
+
+

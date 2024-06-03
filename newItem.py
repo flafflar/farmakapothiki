@@ -79,9 +79,6 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.QualityCombo)
 
-
-        self.verticalLayout_2.addWidget(self.TypeCombo)
-
         self.label_4 = QLabel(self.centralwidget)
         self.label_4.setObjectName(u"label_4")
 

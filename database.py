@@ -579,7 +579,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             UPDATE Product SET Name = ?, PurchaseCost = ?, SellingPrice = ?, Quantity = ?, QuantityLimit = ?, CompanyCode = ?, CategoryCode = ? WHERE ProductCode = ?
-        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code_int, product.category.category_code, product.product_code_int))
+        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code_int, product.category.category_code_int, product.product_code_int))
         self.conn.commit()
 
     def insert_product(self, product: Product):
@@ -592,7 +592,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             INSERT INTO Product (Name, PurchaseCost, SellingPrice, Quantity, QuantityLimit, CompanyCode, CategoryCode) VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code, product.category.category_code))
+        ''', (product.name, product.purchase_cost, product.selling_price, product.quantity, product.quantity_limit, product.company.company_code_int, product.category.category_code_int))
         self.conn.commit()
     
     def insert_drug(self, drug: Drug):
