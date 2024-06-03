@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QLabel, QApplication, QMessageBox
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QRegularExpression
+from PySide6.QtGui import QIcon, QRegularExpressionValidator
 import sys
 from database import DatabaseManager
 
@@ -13,7 +13,6 @@ class LoginForm(QWidget):
         password_label (QLabel): A label for the password input field.
         password_input (QLineEdit): A line edit field for entering the password.
         login_button (QPushButton): A button to trigger the login action.
-        conn (sqlite3.Connection): A connection to the SQLite database.
     """
     def __init__(self):
         """Initialize the LoginForm widget."""
@@ -26,6 +25,13 @@ class LoginForm(QWidget):
         self.setFixedSize(600, 500)
         self.setObjectName("main_widget")
         self.setWindowIcon(QIcon("icons/Blue_Cross.png"))
+
+        # Create and apply the validator for the username input field
+        regex = QRegularExpression(r"\S+")  # Match anything that is not whitespace
+        validator = QRegularExpressionValidator(regex)
+        self.username_input = QLineEdit()
+        self.username_input.setObjectName("username_input")
+        self.username_input.setValidator(validator)
 
         #--- Icon
         icon_label = QLabel()
