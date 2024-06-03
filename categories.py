@@ -1,19 +1,19 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QHeaderView, QApplication, QMessageBox, QDialog, QLineEdit, QFormLayout, QInputDialog
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QHeaderView, QMessageBox, QDialog, QLineEdit, QFormLayout, QInputDialog,QApplication
+import sys
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtCore import Qt, QSize
-import sys
-from database import DatabaseManager
+from database import DatabaseManager, Category
 
-class categoriesWindow(QWidget):
+class CategoriesWindow(QWidget):
     """
     Initializes the CategoriesWindow.
 
     Args:
         db (DatabaseManager): The database manager instance.
     """
-    def __init__(self, db):
+    def __init__(self):
         super().__init__()
-        self.db = db
+        self.db = DatabaseManager()
         self.setWindowTitle("Κατηγορίες")
         self.resize(782, 700)
         self.setMaximumWidth(782)
@@ -64,22 +64,23 @@ class categoriesWindow(QWidget):
 
         for row, category in enumerate(categories):
             self.table_widget.insertRow(row)
-            formatted_code = f"S{int(category[0]):04d}"
-            self.table_widget.setItem(row, 0, QTableWidgetItem(formatted_code))
-            self.table_widget.setItem(row, 1, QTableWidgetItem(category[1]))
+            formatted_code = category.category_code
+            displayed_code = f"C{int(formatted_code[1:]):04d}"
+            self.table_widget.setItem(row, 0, QTableWidgetItem(displayed_code))
+            self.table_widget.setItem(row, 1, QTableWidgetItem(category.name))
 
             icon1_button = QPushButton()
             icon1_button.setIcon(QIcon(QPixmap("icons/icon_i.png")))
-            icon1_button.setObjectName("icon") #identifier for ui
+            icon1_button.setObjectName("icon") # identifier for ui
             icon1_button.setIconSize(QSize(24, 24))
             icon1_button.clicked.connect(lambda _, row=row: self.icon1_clicked(row))
             self.table_widget.setCellWidget(row, 2, icon1_button)
 
             icon2_button = QPushButton()
             icon2_button.setIcon(QIcon(QPixmap("icons/icon_pen.png")))
-            icon2_button.setObjectName("icon") #identifier for ui
+            icon2_button.setObjectName("icon") # identifier for ui
             icon2_button.setIconSize(QSize(24, 24))
-            icon2_button.clicked.connect(lambda _, row=row, code=category[0]: self.icon2_clicked(row, code))
+            icon2_button.clicked.connect(lambda _, row=row, code=category.category_code: self.icon2_clicked(row, code))
             self.table_widget.setCellWidget(row, 3, icon2_button)
 
     def icon1_clicked(self, row):
@@ -89,12 +90,12 @@ class categoriesWindow(QWidget):
         Args:
             row (int): The row index of the clicked button.
         """
-        categoryCode = self.table_widget.item(row, 0).text()[1:]  # Remove the 'C' prefix
-        category = self.db.get_category(categoryCode)
+        category_code = self.table_widget.item(row, 0).text()[1:]  # Remove the 'C' prefix
+        category = self.db.get_category(category_code)
         if category:
             QMessageBox.information(self, "Πληροφορίες κατηγορίας", f"Κωδικός κατηγορίας: C{int(category[0]):04d}\nName: {category[1]}")
         else:
-            QMessageBox.warning(self, "Error", "Η εταιρεία δεν βρέθηκε")
+            QMessageBox.warning(self, "Error", "Η κατηγορία δεν βρέθηκε")
 
     def icon2_clicked(self, row, code):
         """
@@ -113,7 +114,6 @@ class categoriesWindow(QWidget):
         dialog = QDialog(self)
         dialog.setWindowTitle("Προσθήκη Νέας κατηγορίας")
 
-
         form_layout = QFormLayout()
 
         category_name_input = QLineEdit()
@@ -128,10 +128,21 @@ class categoriesWindow(QWidget):
         dialog.exec()
 
     def create_category(self, dialog, category_name):
-        categoryCode = self.db.get_next_category_code()
-        self.db.insert_category(categoryCode, category_name)
-        dialog.accept()
-        self.load_data()
+        """Create a new category in the database.
+
+        Args:
+            category_name (str): The name of the category to create.
+            dialog (QDialog): The dialog window to close after creating the category.
+        """      
+        if category_name.strip():  
+            existing_categories = self.db.get_all_categories()
+            category_code = len(existing_categories) + 1
+            category = Category(category_code, category_name)
+            self.db.insert_category(category)
+            dialog.accept()
+            self.load_data()
+        else:
+            QMessageBox.warning(self, "Σφάλμα", "Το όνομα της κατηγορίας δεν μπορεί να είναι κενό.")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -141,6 +152,6 @@ if __name__ == "__main__":
     with open("styles/styles_categories.qss", "r") as f:
         app.setStyleSheet(f.read())
 
-    window = categoriesWindow(db)
+    window = CategoriesWindow(db)
     window.show()
     sys.exit(app.exec())
