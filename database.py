@@ -341,6 +341,43 @@ class DatabaseManager:
                 FOREIGN KEY (ProductCode) REFERENCES Product(ProductCode)
             )
         ''')
+
+         # Create Orders table
+        self.c.execute('''
+            CREATE TABLE IF NOT EXISTS Orders (
+                OrderCode INTEGER PRIMARY KEY,
+                Quantity INTEGER NOT NULL,
+                ProductCode INTEGER,
+                ClientId INTEGER,
+                BillCode INTEGER,
+                FOREIGN KEY (ProductCode) REFERENCES Product(ProductCode),
+                FOREIGN KEY (ClientId) REFERENCES Client(ClientId),
+                FOREIGN KEY (BillCode) REFERENCES Bill(BillCode)
+            )
+        ''')
+
+        # Create Client table
+        self.c.execute('''
+            CREATE TABLE IF NOT EXISTS Client (
+                ClientId INTEGER PRIMARY KEY,
+                FullName TEXT NOT NULL,
+                Address TEXT,
+                Phone INTEGER
+            )
+        ''')
+
+        # Create Bill table
+        self.c.execute('''
+            CREATE TABLE IF NOT EXISTS Bill (
+                BillCode INTEGER PRIMARY KEY,
+                Date TEXT,
+                PaymentDate TEXT,
+                ClientId INTEGER,
+                OrderCode INTEGER,
+                FOREIGN KEY (ClientId) REFERENCES Client(ClientId),
+                FOREIGN KEY (OrderCode) REFERENCES Orders(OrderCode)
+            )
+        ''')       
         
         # Commit the changes and close the connection
         self.conn.commit()
