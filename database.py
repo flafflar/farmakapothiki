@@ -236,6 +236,55 @@ class User:
         self.full_name = full_name
         self.permissions = permissions
 
+class Client:
+    """
+    Represents a client in the system with a unique ID, name, address, phone number, and email.
+    """
+    def __init__(self, client_id: str, fullname: str, address: str, phone: int):
+        """
+        Initializes a new instance of the Client class.
+
+        Args:
+            client_id (str): The unique identifier for the client.
+            fullname (str): The name of the client.
+            address (str): The address of the client.
+            phone (int): The phone number of the client.
+        """
+        ''''
+        if type(client_id) == int:                     <- Commented this out because there is no reason to use it as client id is displayed nowhere
+            client_id = f"L{str(client_id).zfill(6)}" #C is taken for Category so L 
+        '''
+        self.client_id = client_id
+        self.fullname = fullname
+        self.address = address
+        self.phone = phone
+
+    @property
+    def client_code_int(self) -> int:
+        """
+        Returns the client code as an integer.
+        """
+        return int(self.client_id[1:])
+
+
+class Bill:
+    
+    def __init__(self, code: int, date: datetime, paymentdate: datetime, client: Client, order: any):
+        self.code = code
+        self.date = date
+        self.paymentdate = paymentdate
+        self.client = client
+        self.order = order
+
+class Orders:
+
+    def __init__(self, code: int, quantity: int, product: Product, client: Client, bill: Bill ):
+        self.code = code
+        self.quantity = quantity
+        self.product = product
+        self.client = client
+        self.bill = bill
+
 class DatabaseManager:
     """
     Manages interactions with the SQLite3 database.
@@ -364,7 +413,7 @@ class DatabaseManager:
                 Address TEXT,
                 Phone INTEGER
             )
-        ''')
+        ''')   
 
         # Create Bill table
         self.c.execute('''
