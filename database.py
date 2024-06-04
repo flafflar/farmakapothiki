@@ -716,6 +716,93 @@ class DatabaseManager:
         if row:
             return Category(row[0], row[1])
         return None
+    
+    def get_all_clients(self) -> list[Client]:
+
+        """
+        Retrieves all clients from the Client table in the database.
+
+        Returns:
+            list[Client]: A list of Client objects representing all clients in the database.
+        """
+        self.c.execute('SELECT * FROM Client')
+        clients = [Client(row[0], row[1], row[2], row[3]) for row in self.c.fetchall()]
+        return clients    
+    
+    def get_client_by_id(self, id: int) -> typing.Optional[Client]:
+        """
+        Retrieves a client from the Client table in the database by their id.
+
+        Args:
+            id (int): The id of the client to retrieve.
+
+        Returns:
+            Client: A Client object representing the client with the given id, if found.
+            None: If no client with the given id is found.
+        """
+        self.c.execute('SELECT * FROM Client WHERE ClientId = ?', (id, ))
+    
+    def insert_client(self, client: Client):
+        """
+        Inserts a new client into the Client table in the database.
+        
+        Args:
+            client (Client): The Client object containing the details of the client to insert.
+        """
+        self.c.execute('''
+            INSERT INTO Client (FullName, Address, Phone) VALUES (?, ?, ?)
+        ''', (client.fullname, client.address ,client.phone))
+        self.conn.commit()
+
+    def update_client(self, client: Client):
+        """
+        Updates a client's details in the Client table in the database.
+
+        Args:
+            client (Client): The Client object containing the updated details of the client.
+        """
+        self.c.execute('''
+            UPDATE Client SET FullName = ?, Address = ?, Phone = ? WHERE ClientID = ?
+        ''', (client.fullname, client.address, client.phone, client.client_id))
+        self.conn.commit()
+
+    def get_all_personal_clients(self, user_id: int) -> list[Client]:
+        """
+        Retrieves all personal clients from the PersonalClient table in the database for a given user ID.
+
+        Args:
+            user_id (int): The ID of the user whose personal clients to retrieve.
+
+        Returns:
+            list[Client]: A list of Client objects representing all personal clients for the given user ID.
+        """
+        try:
+            self.c.execute('''
+                SELECT Client.ClientId, Client.fullname, Client.address, Client.phone
+                FROM PersonalClient 
+                JOIN Client ON PersonalClient.ClientId = Client.ClientId 
+                WHERE PersonalClient.UserId = ?
+            ''', (user_id,))
+            
+            clients = [Client(*row) for row in self.c.fetchall()]
+            return clients
+        except Exception as e:
+            print(f"Error retrieving personal clients for user ID {user_id}: {e}")
+            return []
+
+    
+    def add_personal_client(self, user_id: int, client_id: int):
+        """
+        Adds a new personal client to the PersonalClient table in the database for a given user ID.
+
+        Args:
+            user_id (int): The ID of the user to associate the personal client with.
+            client_id (int): The ID of the client to add as a personal client.
+        """
+        self.c.execute('''
+            INSERT INTO PersonalClient (UserID, ClientID) VALUES (?, ?)
+        ''', (user_id, client_id))
+        self.conn.commit()
 
     def close(self):
         """
