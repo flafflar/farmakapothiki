@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QFrame
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
-#from app.login_form import LoginForm
 from admin_window import AdministrationWindow
 from companies import CompaniesWindow
 from categories import CategoriesWindow
@@ -143,6 +142,8 @@ class MainWindow(QMainWindow):
 
         main_layout.addLayout(lower_hbox)
 #---------------------------------------------------------------------------------------------#
+        b_logout.clicked.connect(self.logout)
+
         b_userAdministration.clicked.connect(self.open_administration_window)
         b_editCategories.clicked.connect(self.open_categories_window)
         b_editCompanies.clicked.connect(self.open_companies_window)
@@ -169,3 +170,10 @@ class MainWindow(QMainWindow):
         with open("styles/styles_companies.qss", "r") as f:
             self.companies.setStyleSheet(f.read())
         self.companies.show()
+
+    def logout(self):
+       """Log out of the application."""
+       self.close()
+       from login_form import LoginForm # import here to avoid circular import
+       self.login_window = LoginForm()
+       self.login_window.show()
