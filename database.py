@@ -413,7 +413,17 @@ class DatabaseManager:
                 Address TEXT,
                 Phone INTEGER
             )
-        ''')   
+        ''') 
+        # Create PersonalClient table
+        self.c.execute('''
+            CREATE TABLE IF NOT EXISTS PersonalClient (
+                UserId INTEGER,
+                ClientId INTEGER,
+                PRIMARY KEY (UserId, ClientId),
+                FOREIGN KEY (UserId) REFERENCES User(Id),
+                FOREIGN KEY (ClientId) REFERENCES Client(ClientId)
+            )
+        ''')  
 
         # Create Bill table
         self.c.execute('''
