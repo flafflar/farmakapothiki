@@ -4,11 +4,12 @@ from PySide6.QtCore import Qt
 from admin_window import AdministrationWindow
 from companies import CompaniesWindow
 from categories import CategoriesWindow
-#from clients import ClientsWindow
+from clients_personal import PersonalClientsWindow
 
 class MainWindow(QMainWindow):
     def __init__(self, username):
         super().__init__()
+        self.username = username
 
         self.setWindowTitle(" ")
         self.resize(800, 400)
@@ -147,7 +148,7 @@ class MainWindow(QMainWindow):
         b_userAdministration.clicked.connect(self.open_administration_window)
         b_editCategories.clicked.connect(self.open_categories_window)
         b_editCompanies.clicked.connect(self.open_companies_window)
-        #b_viewClients.clicked.connect(self.open_clients_window)
+        b_viewClients.clicked.connect(self.open_clients_window)
         #b_viewStock.clicked.connect(self.open_stock_window)
 #---------------------------------------------------------------------------------------------#
     def open_administration_window(self):
@@ -170,6 +171,12 @@ class MainWindow(QMainWindow):
         with open("styles/styles_companies.qss", "r") as f:
             self.companies.setStyleSheet(f.read())
         self.companies.show()
+
+    def open_clients_window(self):
+        self.clients = PersonalClientsWindow(self.username)
+        with open("styles/styles_clients.qss", "r") as f:
+            self.clients.setStyleSheet(f.read())
+        self.clients.show()
 
     def logout(self):
        """Log out of the application."""
