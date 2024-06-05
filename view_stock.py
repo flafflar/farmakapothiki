@@ -172,7 +172,6 @@ class Ui_MainWindow(object):
         Returns:
             None
         '''
-        # TODO: Update here:
         self.update_table(self.db_manager.get_all_products())
 
     def update_table(self, data):
@@ -226,31 +225,18 @@ class Ui_MainWindow(object):
             function: A lambda function that opens the edit window.
         '''
         def edit_item():
-            self.edit_window = ProductWindow(product, edit=True, callback=self.update_table_db)
+            self.edit_window = BatchWindow(product, callback=self.update_table_db)
             self.edit_window.show()
         return edit_item
     
     def info_item_lambda(self, product):
-        '''
-        This method returns a lambda function that opens the info window for the given product.
-
-        Args:
-            product: The product object to edit.
-
-        Returns:
-            function: A lambda function that opens the info window.
-        '''
-        def info_item():
-            self.info_window = ProductWindow(product, edit=False)
-            self.info_window.show()
-        return info_item
-class ProductWindow(QWidget):
+        pass
+class BatchWindow(QWidget):
     '''
-    This class represents the product window.
+    This class represents the batch window.
 
     Attributes:
         product: The product object.
-        edit: A boolean value indicating whether the window is in edit mode.
         callback: A function to call after the window is closed.
         db_manager: The database manager.
         data: The data of the product.
@@ -261,82 +247,82 @@ class ProductWindow(QWidget):
         save_changes: Saves the changes to the product.
         _close: Closes the window.
     '''
-    def __init__(self, product, edit=False, callback=None, parent=None):
+    def __init__(self, product, callback=None, parent=None):
         super().__init__(parent)
         self.callback = callback
         self.product = product
-        self.edit = edit
         self.db_manager = database.DatabaseManager()
-        self.setWindowTitle("Επεξεργασία Προϊόντος")
+        self.setWindowTitle("Πληροφορίες")
         self.layout = QFormLayout()
         self.setLayout(self.layout)
         self.init_ui()
 
     def init_ui(self):
-        self.product_code_label = QLabel("Κωδικός Προϊόντος:")
-        self.product_code_label_value = QLabel(self.product.product_code)
-        if not self.edit:
-            self.product_code_label_value.setDisabled(True)
-        self.layout.addRow(self.product_code_label, self.product_code_label_value)
+        labels = [
+            ("Κωδικός", self.product.product_code),
+            ("Όνομα", self.product.name),
+            ("Κατηγορία", self.product.category.name),
+            ("Εταιρεία Παραγωγής", self.product.company.name),
+            ("Κόστος Αγοράς", f"{self.product.purchase_cost} €"),
+            ("Τιμή Πώλησης", f"{self.product.selling_price} €"),
+            ("Ποσότητα", self.product.quantity),
+            ("Όριο Ποσότητας", self.product.quantity_limit),
+        ]
+        
+        max_label_length = max(len(label) for label, _ in labels)
+        layouts = []
+        for label, value in labels:
+            layout = QHBoxLayout()
+            label_widget = QLabel(f"{label}:")
+            label_widget.setAlignment(Qt.AlignmentFlag.AlignRight)
+            value_widget = QLabel(str(value))
+            layout.addWidget(label_widget)
+            layout.addWidget(value_widget)
+            layouts.append(layout)
+        for layout in layouts:
+            self.layout.addRow(layout)
+        
+        # add a table with width 400 with 4 cloumns
+        self.batch_table = QTableWidget()
+        self.batch_table.setColumnCount(4)
+        self.batch_table.setHorizontalHeaderLabels(["Κωδικός", "Ημ. Λήξης", "Ποσότητα", ""])
+        self.layout.addRow(self.batch_table)
+        self.batch_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        self.batch_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        self.batch_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
 
-        self.name_label = QLabel("Όνομα:")
-        self.name_input = QLineEdit()
-        self.name_input.setText(self.product.name)
-        if not self.edit:
-            self.name_input.setDisabled(True)
-        self.layout.addRow(self.name_label, self.name_input)
-
-        self.purchase_cost_label = QLabel("Κόστος Αγοράς:")
-        self.purchase_cost_input = QLineEdit()
-        self.purchase_cost_input.setText(str(self.product.purchase_cost))
-        if not self.edit:
-            self.purchase_cost_input.setDisabled(True)
-        self.layout.addRow(self.purchase_cost_label, self.purchase_cost_input)
-
-        self.selling_price_label = QLabel("Τιμή Πώλησης:")
-        self.selling_price_input = QLineEdit()
-        self.selling_price_input.setText(str(self.product.selling_price))
-        if not self.edit:
-            self.selling_price_input.setDisabled(True)
-        self.layout.addRow(self.selling_price_label, self.selling_price_input)
-
-        self.quantity_label = QLabel("Ποσότητα:")
-        self.quantity_input = QLineEdit()
-        self.quantity_input.setText(str(self.product.quantity))
-        if not self.edit:
-            self.quantity_input.setDisabled(True)
-        self.layout.addRow(self.quantity_label, self.quantity_input)
-
-        self.quantity_limit_label = QLabel("Όριο Ποσότητας:")
-        self.quantity_limit_input = QLineEdit()
-        self.quantity_limit_input.setText(str(self.product.quantity_limit))
-        if not self.edit:
-            self.quantity_limit_input.setDisabled(True)
-        self.layout.addRow(self.quantity_limit_label, self.quantity_limit_input)
-
-        self.save_button = QPushButton("Αποθήκευση")
-        if not self.edit:
-            self.save_button.setDisabled(True)
-        self.save_button.clicked.connect(self.save_changes)
+        self.edit_button = QPushButton("Επεξεργασία")
+        # self.edit_button.clicked.connect(self.edit_changes)
         self.cancel_button = QPushButton("Ακύρωση")
         self.cancel_button.clicked.connect(self._close)
         button_layout = QHBoxLayout()
-        button_layout.addWidget(self.save_button)
+        button_layout.addWidget(self.edit_button)
         button_layout.addWidget(self.cancel_button)
         self.layout.addRow(button_layout)
 
-    def save_changes(self):
-        name = self.name_input.text()
-        purchase_cost = self.purchase_cost_input.text()
-        selling_price = self.selling_price_input.text()
-        quantity = self.quantity_input.text()
-        quantity_limit = self.quantity_limit_input.text()
-        self.product.name = name
-        self.product.purchase_cost = purchase_cost
-        self.product.selling_price = selling_price
-        self.product.quantity = quantity
-        self.product.quantity_limit = quantity_limit
-        self.db_manager.update_product(self.product)
+    def update_batch_table(self):
+        self.dbm = database.DatabaseManager()
+        batches = self.dbm.get_batches_by_product_code(self.product.product_code_int)
+        self.batch_table.setRowCount(len(batches))
+        for row_num, batch in enumerate(batches):
+            self.batch_table.setItem(row_num, 0, QTableWidgetItem(batch.batch_code))
+            self.batch_table.setItem(row_num, 1, QTableWidgetItem(str(batch.expiration_date)))
+            self.batch_table.setItem(row_num, 2, QTableWidgetItem(str(batch.quantity)))
+            edit_button = QPushButton("")
+            icon = QIcon()
+            icon.addFile(u"assets/edit.svg", QSize(), QIcon.Normal, QIcon.Off)
+            edit_button.setIcon(icon)
+            edit_button.setIconSize(QSize(16, 16))
+            edit_button.clicked.connect(self.edit_batch_lambda(batch))
+            self.batch_table.setCellWidget(row_num, 3, edit_button)
+        self.batch_table.setColumnWidth(3, 30)
+        self.dbm.close()
+
+    def edit_batch_lambda(self, batch):
+        pass
+    
+    def edit_changes(self):
+        pass
         self._close()
     
     def _close(self):
@@ -351,12 +337,9 @@ class MainWindow(QMainWindow):
     
     Attributes:
         ui: The user interface of the main window.
-        db_manager: The database manager.
         
     Methods:
         __init__: Initializes the main window.
-        load_categories: Loads the categories into the combo box.
-        load_manufacturers: Loads the manufacturers into the combo box.
         load_table_data: Loads the initial data into the table.
         filter_table_data: Filters the table data based on the search text, category, and manufacturer.
         closeEvent: Closes the database connection.
