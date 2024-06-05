@@ -693,6 +693,20 @@ class DatabaseManager:
         ''', (batch.product_code, batch.quantity, batch.expiration_date, batch.batch_code))
         self.conn.commit()
     
+    def get_batches_by_product_code(self, product_code: int) -> typing.Optional[list[DrugBatch]]:
+        """
+        Retrieves all drug batches from the DrugBatch table in the database for a given product code.
+        
+        Args:
+            product_code (int): The product code of the drug batches to retrieve.
+        
+        Returns:
+            list[DrugBatch]: A list of DrugBatch objects representing all drug batches for the given product code.
+        """
+        self.c.execute('SELECT * FROM DrugBatch WHERE ProductCode = ?', (product_code,))
+        batches = [DrugBatch(row[0], row[1], row[2], row[3]) for row in self.c.fetchall()]
+        return batches
+
     def get_company_by_code(self, company_code: int) -> typing.Optional[Company]:
         """
         Retrieves a company from the Company table in the database by its company code.
