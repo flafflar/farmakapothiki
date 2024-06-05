@@ -77,13 +77,18 @@ class Ui_MainWindow(object):
         self.label_2.setObjectName(u"label_2")
 
         self.verticalLayout_3.addWidget(self.label_2)
-
+        dbm = database.DatabaseManager()
+        categories = dbm.get_all_categories()
+        companies = dbm.get_all_companies()
+        dbm.close()
         self.CategoryBox = QComboBox(self.centralwidget)
         self.CategoryBox.setObjectName(u"CategoryBox")
         self.CategoryBox.setMinimumSize(QSize(220, 0))
         self.CategoryBox.setFont(font)
-        self.CategoryBox.addItem("All")
-        
+        self.CategoryBox.addItem("Όλες")
+        for category in categories:
+            self.CategoryBox.addItem(category.name)
+                
         self.verticalLayout_3.addWidget(self.CategoryBox)
 
 
@@ -104,7 +109,9 @@ class Ui_MainWindow(object):
         self.CompanyBox.setObjectName(u"CompanyBox")
         self.CompanyBox.setMinimumSize(QSize(220, 0))
         self.CompanyBox.setFont(font)
-        self.CompanyBox.addItem("All")
+        self.CompanyBox.addItem("Όλες")
+        for company in companies:
+            self.CompanyBox.addItem(company.name)
 
         self.verticalLayout_4.addWidget(self.CompanyBox)
 
@@ -386,7 +393,7 @@ class MainWindow(QMainWindow):
         all_products = self.db_manager.get_all_products()
         filtered_products = []
         for product in all_products:
-            if search_text.lower() in product.name.lower() and (category == "All" or product.category.name == category) and (manufacturer == "All" or product.company.company_name == manufacturer):
+            if search_text.lower() in product.name.lower() and (category == "Όλες" or product.category.name == category) and (manufacturer == "Όλες" or product.company.name == manufacturer):
                 filtered_products.append(product)
         self.ui.update_table(filtered_products)
 
