@@ -5,6 +5,10 @@ from admin_window import AdministrationWindow
 from companies import CompaniesWindow
 from categories import CategoriesWindow
 from clients_personal import PersonalClientsWindow
+from view_stock import MainWindow as StockWindow
+from add_stock import MainWindow as AddReceivedStockWindow
+from items import MainWindow as ItemsWindow
+from newItem import MainWindow as NewItemWindow
 from database import DatabaseManager
 
 class MainWindow(QMainWindow):
@@ -80,6 +84,7 @@ class MainWindow(QMainWindow):
         storage_vbox = create_label_with_image_and_line("Αποθήκη", "icons/m_apothiki.png")
         self.b_viewStock = QPushButton("Προβολή στοκ")      
         self.b_addNewReceipt = QPushButton("Προσθήκη νέας παραλαβής")
+
 
         # Products section
         products_vbox = create_label_with_image_and_line("Προϊόντα", "icons/m_proionta.png")
@@ -160,7 +165,11 @@ class MainWindow(QMainWindow):
         self.b_editCategories.clicked.connect(self.open_categories_window)
         self.b_editCompanies.clicked.connect(self.open_companies_window)
         self.b_viewClients.clicked.connect(self.open_clients_window)
-        #b_viewStock.clicked.connect(self.open_stock_window)
+        self.b_viewStock.clicked.connect(self.open_stock_window)
+        self.b_addNewReceipt.clicked.connect(self.open_add_received_stock)
+        self.b_viewProducts.clicked.connect(self.open_items_window)
+        self.b_addNewProduct.clicked.connect(self.open_new_item_window)
+        
 #---------------------------------------------------------------------------------------------#
     def open_administration_window(self):
         """Open the administration window."""
@@ -188,6 +197,22 @@ class MainWindow(QMainWindow):
         with open("styles/styles_clients.qss", "r") as f:
             self.clients.setStyleSheet(f.read())
         self.clients.show()
+
+    def open_stock_window(self):
+        self.stock = StockWindow()
+        self.stock.show()
+    
+    def open_add_received_stock(self):
+        self.add_stock = AddReceivedStockWindow()
+        self.add_stock.show()
+    
+    def open_items_window(self):
+        self.items = ItemsWindow()
+        self.items.show()
+
+    def open_new_item_window(self):
+        self.new_item = NewItemWindow()
+        self.new_item.show()
 
     def logout(self):
        """Log out of the application."""
