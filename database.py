@@ -565,7 +565,7 @@ class DatabaseManager:
         """
         self.c.execute('''
             UPDATE Company SET Name = ? WHERE CompanyCode = ?
-        ''', (company.name, company.company_code))
+        ''', (company.name, company.company_code_int))
         self.conn.commit()
 
     def insert_company(self, company: Company):

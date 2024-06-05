@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QTableWidget, QHeaderView, QSizePolicy, QPushButton, QTableWidgetItem
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSize
+from PySide6.QtGui import QIcon
 from database import DatabaseManager
 from clients_list import ClientWindow
 
@@ -21,7 +22,7 @@ class PersonalClientsWindow(QWidget):
 
         self.table_widget = QTableWidget()
         self.table_widget.setColumnCount(3)
-        self.table_widget.setHorizontalHeaderLabels(["Ονοματεπώνυμο", "Διεύθυνση", "Τηλέφωνο"])
+        self.table_widget.setHorizontalHeaderLabels(["Ονοματεπώνυμο", "Διεύθυνση", "Τηλέφωνο"," "," "," "])
         self.table_widget.verticalHeader().setVisible(False)
         self.table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -34,6 +35,10 @@ class PersonalClientsWindow(QWidget):
         self.table_widget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Fixed)
         self.table_widget.setColumnWidth(2, 300)
         self.table_widget.horizontalHeader().setSectionResizeMode(2, QHeaderView.Fixed)
+
+        for col in range(3, 6):
+            self.table_widget.setColumnWidth(col, 25)
+            self.table_widget.horizontalHeader().setSectionResizeMode(col, QHeaderView.Fixed)
 
         self.open_client_button = QPushButton("Προσθήκη πελατών")
         self.open_client_button.clicked.connect(self.open_all_clients_window)
@@ -57,6 +62,25 @@ class PersonalClientsWindow(QWidget):
                 self.table_widget.setItem(row_position, 0, QTableWidgetItem(client.fullname))
                 self.table_widget.setItem(row_position, 1, QTableWidgetItem(client.address))
                 self.table_widget.setItem(row_position, 2, QTableWidgetItem(str(client.phone)))
+
+                stats_button = QPushButton()
+                stats_button.setIcon(QIcon("icons/icon_stats.png"))
+                stats_button.setIconSize(QSize(24, 24))
+                self.table_widget.setCellWidget(row_position, 3, stats_button)
+
+                bills_button = QPushButton("")
+                bills_button.setIcon(QIcon("icons/m_timologia.png"))
+                bills_button.setIconSize(QSize(24, 24))
+                self.table_widget.setCellWidget(row_position, 4, bills_button)
+
+                edit_button = QPushButton("")
+                edit_button.setIcon(QIcon("icons/icon_pen.png")) 
+                edit_button.setIconSize(QSize(24, 24))
+                self.table_widget.setCellWidget(row_position, 5, edit_button)
+
+                stats_button.setStyleSheet("background-color: transparent;")
+                bills_button.setStyleSheet("background-color: transparent;")
+                edit_button.setStyleSheet("background-color: transparent;")                
         else:
             print("No personal clients found for the logged-in user.")
 
