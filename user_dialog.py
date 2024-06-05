@@ -15,7 +15,7 @@ class UserInformationDialog(QDialog):
         self.setFixedSize(400, 440)
         self.user_id = user_id
 
-        with open("resources/styles/userdstyles.qss", "r") as f:
+        with open("styles/userdstyles.qss", "r") as f:
             self.setStyleSheet(f.read())
 
         layout = QVBoxLayout()
