@@ -65,7 +65,7 @@ class CategoriesWindow(QWidget):
         for row, category in enumerate(categories):
             self.table_widget.insertRow(row)
             formatted_code = category.category_code
-            displayed_code = f"C{int(formatted_code[1:]):04d}"
+            displayed_code = f"C{int(formatted_code[1:]):06d}"
             self.table_widget.setItem(row, 0, QTableWidgetItem(displayed_code))
             self.table_widget.setItem(row, 1, QTableWidgetItem(category.name))
 
@@ -97,7 +97,7 @@ class CategoriesWindow(QWidget):
         else:
             QMessageBox.warning(self, "Error", "Η κατηγορία δεν βρέθηκε")
 
-    def icon2_clicked(self, row, code):
+    def icon2_clicked(self,row, code):
         """
         Handles the click event for the icon2 button.
 
@@ -105,9 +105,10 @@ class CategoriesWindow(QWidget):
             row (int): The row index of the clicked button.
             code (int): The category code.
         """
-        new_name, ok = QInputDialog.getText(self, f"Επεξεργασία κατηγορίας", f"Κωδικός: C{int(code):04d}\nΝέο όνομα κατηγορίας:", text=self.db.get_category(code)[1])
+        new_name, ok = QInputDialog.getText(self, f"Επεξεργασία κατηγορίας", f"Κωδικός: {code}\nΝέο όνομα κατηγορίας:")
         if ok:
-            self.db.update_category(code, new_name)
+            category = Category(code, new_name)
+            self.db.update_category(category)
             self.load_data()
 
     def open_create_category(self):
